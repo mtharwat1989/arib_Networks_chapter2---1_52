@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>منصة عريب | مراجعة شبكات الحاسب – الشابتر 2</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme:{ extend:{ colors:{ gold:{DEFAULT:'#D4AF37',light:'#F5D67B',dark:'#8C6A00'}, royal:{900:'#000000',800:'#0b0b0b',700:'#141414',600:'#1d1d1d'} }, fontFamily:{ cairo:['Cairo','sans-serif'], taj:['Tajawal','sans-serif'], pop:['Poppins','sans-serif'] } } } }
+</script>
+<style>
+*{font-family:'Cairo','Tajawal',sans-serif}
+body{background:#000000;color:#fff;overflow-x:hidden}
+.gold-text{background:linear-gradient(135deg,#FFF6C8 0%,#F5D67B 20%,#D4AF37 45%,#FFF0A0 60%,#B8860B 80%,#F5D67B 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:shine 4s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.glass{background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.03));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(212,175,55,.28)}
+.gold-border{position:relative;border:1px solid rgba(212,175,55,.5)}
+.gold-border::before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(135deg,#F5D67B,#8C6A00,#FFF6C8,#B8860B);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.9}
+.btn-gold{background:linear-gradient(135deg,#F8E28A 0%,#D4AF37 35%,#A67C00 70%,#F5D67B 100%);background-size:200% auto;color:#1a1400;font-weight:900;box-shadow:0 8px 30px rgba(212,175,55,.4),inset 0 1px 0 rgba(255,255,255,.7);transition:.35s}
+.btn-gold:hover{background-position:left center;transform:translateY(-2px) scale(1.02);box-shadow:0 15px 45px rgba(212,175,55,.6)}
+.btn-ghost{border:1px solid rgba(212,175,55,.4);transition:.3s}
+.btn-ghost:hover{background:rgba(212,175,55,.12);border-color:#D4AF37}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.35;pointer-events:none;z-index:0;animation:float 12s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-40px) scale(1.08)}}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.opt{transition:.25s;text-align:right;width:100%;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;position:relative;overflow:hidden}
+.opt:hover:not(:disabled){border-color:#D4AF37;background:rgba(212,175,55,.1);transform:translateY(-2px)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:#22c55e!important;background:linear-gradient(135deg,rgba(34,197,94,.25),rgba(34,197,94,.1))!important;box-shadow:0 0 25px rgba(34,197,94,.4)}
+.opt.wrong{border-color:#ef4444!important;background:linear-gradient(135deg,rgba(239,68,68,.25),rgba(239,68,68,.1))!important;box-shadow:0 0 25px rgba(239,68,68,.35)}
+.opt.dim{opacity:.45}
+.opt-letter{flex-shrink:0;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(135deg,#D4AF37,#8C6A00);color:#1a1400}
+.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+.pop{animation:pop .5s cubic-bezier(.68,-.55,.265,1.55)}
+@keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.glow-pulse{animation:glowP 2s infinite}
+@keyframes glowP{0%,100%{box-shadow:0 0 20px rgba(212,175,55,.4)}50%{box-shadow:0 0 45px rgba(212,175,55,.8)}}
+.progress-gold{background:linear-gradient(90deg,#8C6A00,#D4AF37,#FFF6C8,#D4AF37);background-size:200% auto;animation:shine 2.5s linear infinite}
+.pal-btn{width:42px;height:42px;border-radius:12px;font-weight:800;font-size:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);transition:.25s}
+.pal-btn:hover{transform:scale(1.1);border-color:#D4AF37}
+.pal-btn.current{border:2px solid #F5D67B;box-shadow:0 0 18px rgba(212,175,55,.7);transform:scale(1.12)}
+.pal-btn.ok{background:linear-gradient(135deg,#16a34a,#15803d);border-color:#22c55e}
+.pal-btn.bad{background:linear-gradient(135deg,#dc2626,#991b1b);border-color:#ef4444}
+.pal-btn.skip{background:rgba(245,214,123,.2);border-color:#D4AF37}
+.ar-box{background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(212,175,55,.06));border:1px dashed rgba(212,175,55,.6);border-radius:14px}
+.feedback-ok{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(34,197,94,.08));border:1px solid #22c55e}
+.feedback-bad{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(239,68,68,.08));border:1px solid #ef4444}
+.score-ring{transform:rotate(-90deg)}
+.score-ring circle{transition:stroke-dashoffset 2s ease}
+.trophy-float{animation:trophyF 3s ease-in-out infinite}
+@keyframes trophyF{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+#celebrateOverlay{transition:.4s}
+.crown-shine{position:relative;overflow:hidden}
+.crown-shine::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:sheen 3s infinite}
+@keyframes sheen{0%{left:-80%}60%,100%{left:130%}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:#0b0b0b}
+::-webkit-scrollbar-thumb{background:linear-gradient(#D4AF37,#8C6A00);border-radius:10px}
+.toast{animation:slideIn .4s cubic-bezier(.68,-.55,.265,1.55)}
+@keyframes slideIn{from{transform:translateY(30px) scale(.9);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+@media print{body *{visibility:hidden}#reportSection,#reportSection *{visibility:visible}#reportSection{position:absolute;top:0;right:0;left:0;background:#fff!important;color:#000!important} .no-print{display:none!important}}
+.chapter-badge{background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));border:1px solid rgba(212,175,55,.4)}
+.hero-pattern{background-image:radial-gradient(rgba(212,175,55,.15) 1px,transparent 1px);background-size:22px 22px}
+.streak-fire{animation:fire .8s infinite alternate}
+@keyframes fire{from{transform:scale(1)}to{transform:scale(1.15) rotate(-5deg)}}
+
+.cm-node{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px 12px;transition:.25s}
+.cm-node:hover{border-color:#D4AF37;background:rgba(212,175,55,.1);transform:translateY(-2px)}
+.cm-node b{display:block;color:#F5D67B;font-family:'Poppins','Cairo',sans-serif;font-size:13.5px;direction:ltr;text-align:left}
+.cm-node span{display:block;font-size:12.5px;line-height:1.75;color:rgba(255,255,255,.82);margin-top:2px}
+.cm-card{position:relative;border-radius:22px;padding:18px;transition:.3s}
+.cm-card::before{content:'';position:absolute;top:-22px;right:50%;width:2px;height:22px;background:linear-gradient(#D4AF37,transparent);opacity:.7}
+.cm-card.done{box-shadow:0 0 30px rgba(34,197,94,.35);border-color:#22c55e!important}
+.cm-flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;direction:ltr;font-family:'Poppins',sans-serif;font-weight:600;font-size:12.5px}
+.cm-flow .st{padding:7px 12px;border-radius:12px;background:linear-gradient(135deg,#1d1d1d,#141414);border:1px solid rgba(212,175,55,.5)}
+.cm-flow .ar{color:#F5D67B;font-weight:900}
+@keyframes pulseLine{0%,100%{opacity:.5}50%{opacity:1}}
+header{padding-top:env(safe-area-inset-top,0px)}body{padding-bottom:env(safe-area-inset-bottom,0px)}
+/* LIGHT MODE */
+.glass{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:linear-gradient(145deg,rgba(20,20,20,.96),rgba(4,4,4,.96))!important}
+.blob,#stars{display:none!important}
+body{background:radial-gradient(circle at 90% -5%,rgba(212,175,55,.22),transparent 45%),radial-gradient(circle at -5% 80%,rgba(70,70,70,.3),transparent 50%),#000000!important}
+.gold-text{animation:none!important;background-size:100% auto!important}
+.progress-gold,.trophy-float,.glow-pulse,.crown-shine::after{animation:none!important}
+#explainBox{font-size:1.3rem;line-height:2.4}.xs{margin-top:.9rem;padding:.7rem 1rem;background:rgba(255,255,255,.05);border-right:4px solid #D4AF37;border-radius:12px}.xs b{color:#F5D67B}.term{color:#F5D67B;font-weight:900;background:rgba(212,175,55,.14);border-radius:6px;padding:0 5px}.sxp b{color:#F5D67B}
+.vis{background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.35);border-radius:20px;padding:16px;font-weight:700}
+.vinfo{margin-top:10px;padding:12px 14px;background:rgba(0,0,0,.45);border-right:4px solid #D4AF37;border-radius:12px;font-size:1.1rem;line-height:2}
+.vhint{margin-top:8px;font-size:.85rem;color:rgba(255,255,255,.55)}.vrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;justify-content:center}
+.vbtn{padding:8px 16px;border-radius:12px;border:1px solid rgba(212,175,55,.5);background:rgba(255,255,255,.06);font-weight:800}.vbtn.on{background:linear-gradient(135deg,#F8E28A,#D4AF37);color:#111}
+.vstep{direction:ltr;margin-top:8px;padding:8px 14px;border-radius:12px;background:rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.4);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.vstep small{color:#F5D67B}
+.vbar{height:14px;background:rgba(255,255,255,.1);border-radius:99px;margin-top:10px;overflow:hidden;direction:ltr}.vbar div{height:100%;background:linear-gradient(90deg,#8C6A00,#F5D67B);transition:.4s}
+.vbig{font-size:1.6rem;font-weight:900;color:#F5D67B;margin-top:10px}.vbox{width:28px;height:28px;border:2px solid #D4AF37;border-radius:6px;display:inline-block}.vbox.f{background:#D4AF37}
+.vusers{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:10px}.vu{opacity:.25;font-size:20px;filter:grayscale(1)}.vu.ok{opacity:1;filter:none}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="blob" style="width:520px;height:520px;background:#D4AF37;top:-150px;right:-150px"></div>
+<div class="blob" style="width:420px;height:420px;background:#1d1d1d;bottom:10%;left:-120px;animation-delay:2s"></div>
+<div class="blob" style="width:300px;height:300px;background:#7C3AED;top:40%;right:30%;opacity:.2;animation-delay:4s"></div>
+
+<!-- PRELOADER -->
+<div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#000000] transition-opacity duration-700">
+<div class="w-24 h-24 rounded-3xl btn-gold flex items-center justify-center text-5xl glow-pulse">👑</div>
+<h1 class="mt-6 text-2xl font-black gold-text">منصة عريب الذهبية</h1>
+<p class="text-white/60 mt-2">جاري تجهيز تجربة ملكية تليق ببطلة الإدارة...</p>
+<div class="w-64 h-2 mt-6 rounded-full bg-white/10 overflow-hidden"><div id="loadBar" class="h-full progress-gold rounded-full" style="width:0%"></div></div>
+</div>
+
+<!-- HEADER -->
+<header class="sticky top-0 z-50 glass border-b border-[#D4AF37]/30">
+<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl btn-gold flex items-center justify-center text-2xl crown-shine">👑</div>
+<div><div class="font-black text-lg leading-none">عريب <span class="gold-text">العبيدي</span></div><div class="text-[12px] text-white/60">شبكات الحاسب • الشابتر 2 • استعداد اختبار الميد</div></div>
+</div>
+<div class="hidden md:flex items-center gap-2 text-sm">
+<a href="#home" class="px-4 py-2 rounded-xl hover:bg-white/10 transition">الرئيسية</a>
+<a href="#summary" class="px-4 py-2 rounded-xl hover:bg-white/10 transition">الملخص</a>
+<a href="#quizSection" class="px-4 py-2 rounded-xl hover:bg-white/10 transition">الاختبار</a>
+<a href="#reportSection" class="px-4 py-2 rounded-xl hover:bg-white/10 transition">التقرير</a>
+</div>
+<div class="flex items-center gap-2">
+<div class="hidden sm:flex items-center gap-2 glass rounded-xl px-3 py-2 text-sm">⚡<span id="hdrScore" class="font-black">0</span><span class="text-white/40">نقطة</span></div>
+<button onclick="toggleSound()" id="soundBtn" class="w-11 h-11 rounded-xl btn-ghost flex items-center justify-center text-xl">🔊</button>
+</div>
+</div>
+<div class="h-1 bg-white/10"><div id="topProgress" class="h-full progress-gold transition-all duration-500" style="width:0%"></div></div>
+</header>
+
+<!-- HERO -->
+<section id="home" class="relative z-10 max-w-7xl mx-auto px-4 pt-8 pb-2">
+<div class="grid lg:grid-cols-2 gap-6 items-stretch">
+<div class="glass gold-border rounded-3xl p-7 md:p-10 relative overflow-hidden hero-pattern flex flex-col justify-center">
+<div class="absolute top-0 left-0 w-full h-1 progress-gold"></div>
+<div class="inline-flex items-center gap-2 chapter-badge rounded-full px-4 py-2 text-sm font-bold text-[#F5D67B] self-start"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Application Layer • 70 سؤالًا (35 اختر + 35 صح/خطأ)</div>
+<h1 class="text-3xl md:text-5xl font-black leading-[1.25] mt-5">أهلًا بالبطلة <span class="gold-text">عريب</span> 🏆</h1>
+<div class="flex flex-wrap gap-3 mt-6">
+<button onclick="scrollToQuiz()" class="btn-gold rounded-2xl px-8 py-4 text-lg">▶️ ابدئي الاختبار</button>
+<button onclick="translateAllToggle()" class="btn-ghost rounded-2xl px-6 py-4 font-bold">🌐 ترجمة الكل</button>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-7">
+<div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-center"><div class="text-2xl font-black gold-text">70</div><div class="text-xs text-white/60 font-bold">سؤالًا (اختر + صح/خطأ)</div></div>
+<div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-center"><div class="text-2xl font-black gold-text" id="bestScoreHero">0%</div><div class="text-xs text-white/60 font-bold">أفضل نتيجة لك</div></div>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="glass gold-border rounded-3xl p-6 text-center relative overflow-hidden crown-shine">
+<div class="trophy-float text-7xl">🏆</div>
+<h3 class="font-black text-xl mt-2">بطاقة البطلة الذهبية</h3>
+<div class="flex items-center justify-center gap-3 mt-4">
+<div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-black btn-gold">ع</div>
+<div class="text-right"><div class="font-black">عريب</div><div class="text-xs text-[#F5D67B] font-bold">⭐ المستوى <span id="levelNum">1</span> • <span id="xpNum">0</span> XP</div><div class="w-40 h-2 bg-white/10 rounded-full mt-2 overflow-hidden"><div id="xpBar" class="h-full progress-gold" style="width:0%"></div></div></div>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-5 text-sm">
+<div class="rounded-xl bg-black/30 border border-white/10 p-3"><div class="font-black text-lg" id="statCorrect">0</div><div class="text-green-400 text-xs font-bold">✅ صحيحة</div></div>
+<div class="rounded-xl bg-black/30 border border-white/10 p-3"><div class="font-black text-lg" id="statWrong">0</div><div class="text-red-400 text-xs font-bold">❌ خاطئة</div></div>
+<div class="rounded-xl bg-black/30 border border-white/10 p-3"><div class="font-black text-lg" id="statStreak">0 🔥</div><div class="text-orange-300 text-xs font-bold">سلسلة التوهج</div></div>
+</div>
+<div class="mt-4 flex items-center justify-center gap-2 text-sm bg-black/30 rounded-xl p-3 border border-[#D4AF37]/30">🕒 الوقت: <b id="timerHero">00:00</b> <span class="text-white/40">|</span> <span>السؤال <b id="heroQpos" class="text-[#F5D67B]">1</b> / 16</span></div>
+</div>
+
+<div class="grid grid-cols-2 gap-4">
+<button onclick="setMode('train')" id="modeTrain" class="glass rounded-2xl p-5 text-right border-2 border-[#D4AF37] transition hover:scale-[1.02]">
+<div class="text-2xl">🎓</div><div class="font-black mt-1">وضع التدريب البطولي</div><div class="text-xs text-white/60 mt-1 leading-5">محاولات للتعلم + شرح + التقييم على أول إجابة</div><div class="text-[11px] mt-2 font-black text-green-400">● مُفعّل الآن</div>
+</button>
+<button onclick="setMode('exam')" id="modeExam" class="glass rounded-2xl p-5 text-right border-2 border-transparent transition hover:scale-[1.02]">
+<div class="text-2xl">⏱️</div><div class="font-black mt-1">وضع اختبار الميد الحقيقي</div><div class="text-xs text-white/60 mt-1 leading-5">محاولة واحدة فقط بدون رجعة مثل الاختبار</div><div class="text-[11px] mt-2 font-black text-white/40" id="examLabel">○ اضغطي للتفعيل</div>
+</button>
+</div>
+</div>
+</div>
+
+</section>
+
+<!-- SUMMARY -->
+<section id="summary" class="relative z-10 max-w-7xl mx-auto px-4 pt-6 pb-2">
+<div class="glass gold-border rounded-3xl p-5 md:p-8 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 progress-gold"></div>
+<div class="flex flex-wrap items-center justify-between gap-3">
+<div><div class="text-sm font-black text-[#F5D67B]">📚 قبل ما تبدأ الأسئلة</div><h2 class="text-2xl md:text-4xl font-black mt-1">ملخص الشابتر <span class="gold-text">Application Layer</span></h2><p class="text-white/70 font-bold mt-2 text-base md:text-lg">8 أقسام فيها أهم نقاط الشابتر مع رسومات وأشكال تفاعلية. فوق كل قسم زر «ترجمة» (الإنجليزي يسار والعربي يمين) وزر «شرح» بلهجة بسيطة وأمثلة من الواقع.</p></div>
+<button onclick="sumAll()" id="sumAllBtn" class="btn-gold rounded-2xl px-6 py-3 font-black text-base">🌐 ترجمة كل الفقرات</button>
+</div>
+<div id="sumList" class="grid gap-5 mt-6"></div>
+</div></section>
+
+<!-- QUIZ -->
+<section id="quizSection" class="relative z-10 max-w-7xl mx-auto px-4 py-6">
+<div class="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
+
+<div class="glass gold-border rounded-3xl overflow-hidden">
+<div class="p-4 md:p-5 flex flex-wrap items-center justify-between gap-3 bg-black/20 border-b border-[#D4AF37]/20">
+<div class="flex items-center gap-2 flex-wrap">
+<span id="qCounter" class="btn-gold rounded-xl px-4 py-2 text-sm">السؤال 1 / 16</span>
+<span id="qPageBadge" class="rounded-xl px-3 py-2 text-sm font-bold bg-white/10 border border-white/15">📘 الشابتر 2</span>
+<span id="qTypeBadge" class="rounded-xl px-3 py-2 text-sm font-bold bg-purple-500/20 border border-purple-400/40 text-purple-200">صح / خطأ</span>
+<span id="attemptBadge" class="rounded-xl px-3 py-2 text-sm font-bold bg-white/10 border border-white/15 hidden">المحاولة 2</span>
+</div>
+<div class="flex items-center gap-2">
+<button onclick="toggleBookmark()" id="bmBtn" class="w-10 h-10 rounded-xl btn-ghost flex items-center justify-center" title="حفظ في المفضلة">🤍</button>
+<button onclick="toggleTranslateCurrent()" id="trBtn" class="rounded-xl px-4 py-2.5 font-black text-sm btn-gold">🌐 ترجم</button>
+</div>
+</div>
+
+<div class="h-2 bg-white/10"><div id="quizProgress" class="h-full progress-gold transition-all duration-500" style="width:2%"></div></div>
+
+<div id="qCard" class="p-5 md:p-8">
+<div class="flex items-center gap-2 text-xs text-white/40 font-bold mb-3">📖 مراجعة شبكات الحاسب: الشابتر 2 — أجب لتكمل التحدي</div>
+<h2 id="qEn" dir="ltr" class="text-left font-pop font-semibold text-lg md:text-2xl leading-9 bg-black/30 border border-white/10 rounded-2xl p-5"></h2>
+<div id="qArBox" class="ar-box p-4 mt-3 hidden pop"><div class="text-[11px] font-black text-[#F5D67B] mb-1">🇸🇦 الترجمة العربية المباشرة:</div><div id="qAr" class="font-bold leading-8 text-[15px] md:text-lg"></div></div>
+<div id="optsGrid" class="grid gap-3 mt-5"></div>
+<div id="feedbackBox" class="mt-5 hidden rounded-2xl p-5 text-center font-black text-lg pop"></div>
+<div id="explainBox" class="mt-3 hidden rounded-2xl p-5 bg-black/50 border border-[#D4AF37]/50 text-lg md:text-xl leading-9"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mt-6">
+<div class="flex gap-2">
+<button onclick="prevQ()" class="btn-ghost rounded-xl px-5 py-3 font-bold">→ السابق</button>
+<button onclick="nextQ()" class="btn-gold rounded-xl px-7 py-3">التالي ←</button>
+</div>
+<div class="flex gap-2">
+<button onclick="skipQ()" class="btn-ghost rounded-xl px-4 py-3 text-sm font-bold">⏭️ تخطي</button>
+<button onclick="confirmFinish()" class="rounded-xl px-5 py-3 text-sm font-black bg-gradient-to-l from-red-500 to-orange-500 hover:scale-105 transition shadow-lg">🏁 إنهاء و عرض النتيجة</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="flex flex-col gap-5">
+<div id="paletteCard" class="glass rounded-3xl p-5 gold-border">
+<h3 class="font-black flex items-center gap-2"><span class="text-xl">🗺️</span> خريطة المعركة <span class="text-xs font-bold text-white/40">(16 سؤالًا)</span></h3>
+<div class="flex flex-wrap gap-2 mt-3 text-[11px] font-bold">
+<button onclick="setFilter('all')" class="filter-btn px-3 py-1.5 rounded-lg bg-[#D4AF37] text-black" data-f="all">الكل</button>
+<button onclick="setFilter('un')" class="filter-btn px-3 py-1.5 rounded-lg bg-white/10" data-f="un">غير مجاب</button>
+<button onclick="setFilter('ok')" class="filter-btn px-3 py-1.5 rounded-lg bg-white/10" data-f="ok">صح</button>
+<button onclick="setFilter('bad')" class="filter-btn px-3 py-1.5 rounded-lg bg-white/10" data-f="bad">خطأ</button>
+<button onclick="setFilter('bm')" class="filter-btn px-3 py-1.5 rounded-lg bg-white/10" data-f="bm">⭐ مفضلة</button>
+</div>
+<div id="palette" class="grid grid-cols-5 gap-2 mt-4 max-h-[380px] overflow-y-auto p-1"></div>
+<div class="mt-4 text-xs leading-6 text-white/60 bg-black/30 rounded-xl p-3 border border-white/10">🟩 صح من أول مرة • 🟥 يحتاج مراجعة • 🟨 متخطّى • ✨ الذهبي = سؤالك الحالي<br>💡 التقييم النهائي يعتمد على <b class="text-[#F5D67B]">أول إجابة</b> في وضع التدريب.</div>
+<button onclick="confirmFinish()" class="btn-gold w-full rounded-xl py-3 mt-3 font-black">📊 اعرض تقرير عريب النهائي</button>
+</div>
+
+<div class="glass rounded-3xl p-5">
+<h3 class="font-black">⚔️ أسلحة البطلة</h3>
+<div class="grid grid-cols-2 gap-2 mt-3 text-sm font-bold">
+<button onclick="translateAllToggle()" class="btn-ghost rounded-xl py-3">🌐 ترجمة الكل</button>
+<button onclick="toggleSound()" class="btn-ghost rounded-xl py-3">🔊 الصوت</button>
+<button onclick="restartQuiz()" class="btn-ghost rounded-xl py-3">🔄 من جديد</button>
+<button onclick="reviewBookmarks()" class="btn-ghost rounded-xl py-3">⭐ المفضلة</button>
+</div>
+<div class="mt-3 rounded-xl bg-black/30 border border-[#D4AF37]/30 p-3 text-xs leading-6"><b class="text-[#F5D67B]">نصيحة ذهبية يا عريب:</b> استخدمي لوحة المفاتيح: <b>1-4</b> للإجابة • <b>T</b> للترجمة • <b>→ ←</b> للتنقل.</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- REPORT -->
+<section id="reportSection" class="relative z-10 max-w-7xl mx-auto px-4 py-8 hidden">
+<div class="glass gold-border rounded-3xl p-6 md:p-10 text-center relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1.5 progress-gold"></div>
+<div class="trophy-float text-8xl">🏆</div>
+<h2 class="text-3xl md:text-4xl font-black mt-3">تقرير البطلة <span class="gold-text">عريب</span></h2>
+<p id="reportSubtitle" class="text-white/60 mt-2 font-bold"></p>
+<div class="grid md:grid-cols-3 gap-6 mt-8 items-center">
+<div class="flex flex-col items-center">
+<div class="relative w-52 h-52">
+<svg class="score-ring w-52 h-52" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"/><circle id="scoreCircle" cx="60" cy="60" r="52" fill="none" stroke="url(#gg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5D67B"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#FFF6C8"/></linearGradient></defs></svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center"><div id="finalPct" class="text-4xl font-black gold-text">0%</div><div class="text-xs text-white/40 font-bold">النسبة النهائية</div></div>
+</div>
+<div id="gradeBadge" class="mt-3 px-6 py-2 rounded-full font-black btn-gold"></div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="rounded-2xl bg-green-500/10 border border-green-500/40 p-5"><div class="text-3xl font-black text-green-400" id="rCorrect">0</div><div class="text-xs font-bold text-green-300">✅ إجابات صحيحة</div></div>
+<div class="rounded-2xl bg-red-500/10 border border-red-500/40 p-5"><div class="text-3xl font-black text-red-400" id="rWrong">0</div><div class="text-xs font-bold text-red-300">❌ تحتاج مراجعة</div></div>
+<div class="rounded-2xl bg-white/5 border border-white/15 p-5"><div class="text-3xl font-black gold-text" id="rTime">00:00</div><div class="text-xs font-bold text-white/60">⏱️ زمن الإنجاز</div></div>
+<div class="rounded-2xl bg-white/5 border border-white/15 p-5"><div class="text-3xl font-black gold-text" id="rStreak">0</div><div class="text-xs font-bold text-white/60">🔥 أفضل سلسلة</div></div>
+</div>
+<div class="glass rounded-2xl p-4">
+<canvas id="chartDoughnut" height="220"></canvas>
+<div class="mt-2 text-xs text-white/40 font-bold">توزيع الأداء: صح / خطأ / متخطّى</div>
+<hr class="border-white/10 my-3">
+<canvas id="chartBars" height="220"></canvas>
+<div class="mt-2 text-xs text-white/40 font-bold">الأداء حسب أجزاء الشابتر (حسب رقم الصفحة)</div>
+</div>
+</div>
+<div id="finalMessage" class="mt-6 text-xl font-black leading-9 rounded-2xl p-5 feedback-ok"></div>
+<div class="mt-6 rounded-2xl p-5 border border-green-500/60 bg-green-500/10 text-center no-print">
+<div class="font-black text-lg">📲 إرسال تقرير الإجابات للدكتور محمد</div>
+<p class="text-white/70 text-sm mt-1 leading-7">اضغطي الزر لفتح واتساب برسالة جاهز فيها نتيجتك وأخطائك، ثم اضغطي «إرسال».</p>
+<button onclick="sendWhatsApp()" class="rounded-2xl px-8 py-4 mt-3 font-black text-lg text-white hover:scale-105 transition shadow-lg" style="background:linear-gradient(135deg,#25D366,#128C7E)">📲 أرسل التقرير للدكتور محمد عبر واتساب</button>
+</div>
+
+<div class="flex flex-wrap justify-center gap-3 mt-6 no-print">
+<button onclick="showOnlyWrong=false;renderReportList();toggleWrongBtn(this)" class="btn-gold rounded-xl px-6 py-3 font-black">📋 عرض الكل (16)</button>
+<button onclick="showOnlyWrong=true;renderReportList();toggleWrongBtn(this)" class="btn-ghost rounded-xl px-6 py-3 font-bold">❌ مراجعة الأخطاء فقط</button>
+<button onclick="restartQuiz()" class="btn-ghost rounded-xl px-6 py-3 font-bold">🔄 إعادة الاختبار</button>
+<button onclick="window.print()" class="btn-ghost rounded-xl px-6 py-3 font-bold">🖨️ طباعة التقرير</button>
+<button onclick="shareResult()" class="btn-ghost rounded-xl px-6 py-3 font-bold">📤 مشاركة النتيجة</button>
+<button onclick="sendWhatsApp()" class="rounded-xl px-6 py-3 font-black text-white" style="background:linear-gradient(135deg,#25D366,#128C7E)">📲 واتساب الدكتور محمد</button>
+</div>
+</div>
+
+<div class="mt-6 flex items-center gap-3">
+<div class="flex-1 h-px bg-gradient-to-l from-transparent via-[#D4AF37] to-transparent"></div>
+<h3 class="font-black text-xl whitespace-nowrap">📝 كشف الدرجات التفصيلي <span class="text-sm text-white/40">مع الإجابات النموذجية</span></h3>
+<div class="flex-1 h-px bg-gradient-to-l from-transparent via-[#D4AF37] to-transparent"></div>
+</div>
+<div id="reportList" class="grid gap-4 mt-5"></div>
+</section>
+
+<footer class="relative z-10 max-w-7xl mx-auto px-4 pb-10 pt-4 text-center text-white/40 text-sm">
+<div class="glass rounded-2xl p-5">صُنع بفخر 👑 للبطلة <b class="gold-text">عريب</b> • مراجعة شبكات الحاسب (الشابتر 2) • بالتوفيق في اختبار الميد يا بطلة 🚀<br><span class="text-xs">70 سؤالًا بالترتيب حسب صفحات الشابتر مع ترجمة فورية وتقرير ذكي</span></div>
+</footer>
+
+<!-- CELEBRATION TOAST -->
+<div id="toastWrap" class="fixed bottom-6 right-1/2 translate-x-1/2 z-[90] flex flex-col items-center gap-2 pointer-events-none w-[92%] max-w-md"></div>
+<div id="bigCheer" class="fixed inset-0 z-[95] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+<div class="glass gold-border rounded-3xl p-8 text-center max-w-md w-full pop crown-shine">
+<div class="text-7xl trophy-float" id="bigCheerEmoji">🎉</div>
+<h2 id="bigCheerTitle" class="text-2xl font-black gold-text mt-3">أحسنت عريب كمّلي يا بطلة! 🏆</h2>
+<p id="bigCheerSub" class="text-white/70 font-bold mt-2 text-sm leading-7"></p>
+<button onclick="closeCheer()" class="btn-gold rounded-xl px-8 py-3 mt-5 font-black">واصلي يا بطلة 🚀</button>
+</div>
+</div>
+
+<script>
+/* ================= DATA - CHAPTER 2 APPLICATION LAYER ================= */
+const QUESTIONS =[{"pg": 5, "type": "mcq", "en": "Why don't developers need to write software for network-core devices?", "ar": "ليش المطوّر ما يحتاج يكتب برامج لأجهزة قلب الشبكة؟", "opts": {"en": ["They do not run user applications", "They run only HTTP", "They are always clients", "They have no IP addresses"], "ar": ["ما تشغّل تطبيقات المستخدم", "تشغّل HTTP فقط", "هي دايمًا عملاء", "ما لها عناوين IP"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> التطبيقات تشتغل على الأجهزة الطرفية (end systems) بس، وأجهزة قلب الشبكة مثل الراوترات تمرّر الرسائل فقط. وهذا يسهّل تطوير التطبيقات وانتشارها بسرعة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل ما تفتحين مطعم بدون ما تبنين الطريق: الطريق جاهز.</div> <span style=\"opacity:.7\">(صفحة 5)</span>", "id": 1, "page": "صفحة 5"}, {"pg": 5, "type": "tf", "en": "Running applications on end systems allows rapid app development and propagation.", "ar": "تشغيل التطبيقات على الأجهزة الطرفية يتيح تطويرًا وانتشارًا سريعًا.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> لا حاجة لتغيير أجهزة قلب الشبكة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل تطبيق جديد بدون تغيير الإنترنت.</div> <span style=\"opacity:.7\">(صفحة 5)</span>", "id": 2, "page": "صفحة 5"}, {"pg": 6, "type": "mcq", "en": "In the client-server paradigm, which statement describes the server?", "ar": "في نموذج العميل-الخادم، أي عبارة تصف الخادم؟", "opts": {"en": ["An always-on host with a permanent IP address", "A host that is intermittently connected with a dynamic IP address", "A host that communicates directly with other clients", "A host that always initiates contact with clients"], "ar": ["جهاز دايم الشغل وله عنوان IP ثابت", "جهاز متصل بشكل متقطع وIP متغيّر", "جهاز يتواصل مباشرة مع بقية العملاء", "جهاز يبدأ الاتصال دايمًا بالعملاء"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الخادم هو الطرف اللي ينتظر الطلبات، فلازم يكون شغّال طول الوقت وله IP ثابت عشان العملاء يلقونه، وغالبًا يكون في data center. أما العملاء فيتصلون بالخادم، وممكن ينقطعون وتتغير عناوينهم، وما يتواصلون مع بعض مباشرة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل مطعم: مفتوح دايم وعنوانه ثابت، والزبون يجي ويروح.</div> <span style=\"opacity:.7\">(صفحة 6)</span>", "id": 3, "page": "صفحة 6"}, {"pg": 6, "type": "tf", "en": "In the client-server paradigm, clients communicate directly with each other.", "ar": "في نموذج العميل-الخادم، العملاء يتواصلون مباشرة مع بعضهم.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> العملاء يتواصلون مع الخادم فقط ولا يتواصلون مباشرة مع بعض. التواصل المباشر بين الأجهزة هو سمة الـ P2P.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل زبائن المطعم: كل واحد يكلّم الويتر مو بعضهم.</div> <span style=\"opacity:.7\">(صفحة 6)</span>", "id": 4, "page": "صفحة 6"}, {"pg": 6, "type": "mcq", "en": "HTTP, IMAP and FTP are examples of which paradigm?", "ar": "HTTP وIMAP وFTP أمثلة على أي نموذج؟", "opts": {"en": ["Peer-to-peer", "Client-server", "Broadcast only", "Mesh routing"], "ar": ["Peer-to-peer", "العميل-الخادم", "البث فقط", "التوجيه الشبكي"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> هذي بروتوكولات عميل-خادم: العميل يتصل بالخادم الدايم الشغل.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل الزبون والمطعم.</div> <span style=\"opacity:.7\">(صفحة 6)</span>", "id": 5, "page": "صفحة 6"}, {"pg": 6, "type": "tf", "en": "A server in the client-server paradigm typically has a permanent IP address.", "ar": "الخادم في نموذج العميل-الخادم عادة له عنوان IP ثابت.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الخادم دايم الشغل وثابت العنوان، والعملاء قد يتغير IP.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> عنوان المطعم ثابت.</div> <span style=\"opacity:.7\">(صفحة 6)</span>", "id": 6, "page": "صفحة 6"}, {"pg": 7, "type": "tf", "en": "In a P2P architecture there is no always-on server, and every new peer adds new service capacity as well as new demand.", "ar": "في معمارية P2P ما فيه خادم دايم الشغل، وكل peer جديد يضيف قدرة خدمة جديدة وطلبًا جديدًا.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> هذي الـ self scalability: الجهاز الجديد يطلب ملفات لكنه يشارك ويرفع للباقين، فالنظام يكبر بدون خادم أقوى. الثمن إن الإدارة أصعب لأن الأجهزة تنقطع وتغيّر عناوينها.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل جمعة أصحاب كل واحد يجيب أكلة: كل ما زاد العدد زاد الأكل وزاد الجوعانين.</div> <span style=\"opacity:.7\">(صفحة 7)</span>", "id": 7, "page": "صفحة 7"}, {"pg": 7, "type": "mcq", "en": "Which application is given as an example of the P2P architecture?", "ar": "أي تطبيق ذُكر كمثال على معمارية P2P؟", "opts": {"en": ["HTTP", "BitTorrent", "IMAP", "SMTP"], "ar": ["HTTP", "BitTorrent", "IMAP", "SMTP"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> مشاركة الملفات P2P مثل BitTorrent: الأجهزة تطلب وتقدّم الخدمة لبعضها بدون خادم دايم الشغل.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> كل واحد يعطي الباقين قطعة من الملف.</div> <span style=\"opacity:.7\">(صفحة 7)</span>", "id": 8, "page": "صفحة 7"}, {"pg": 7, "type": "tf", "en": "In P2P, peers are intermittently connected and may change IP addresses, making management complex.", "ar": "في P2P الأقران متصلون بشكل متقطع وقد تتغير عناوينهم، ما يعقّد الإدارة.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> هذا ثمن self scalability.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> ضيوف يجون ويروحون.</div> <span style=\"opacity:.7\">(صفحة 7)</span>", "id": 9, "page": "صفحة 7"}, {"pg": 8, "type": "mcq", "en": "What is a client process?", "ar": "وش هي العملية العميلة (client process)؟", "opts": {"en": ["The process that waits to be contacted", "The process that initiates communication", "Any process on the router", "The process that stores cookies"], "ar": ["العملية اللي تنتظر أن يتصل بها أحد", "العملية اللي تبدأ الاتصال", "أي عملية على الراوتر", "العملية اللي تخزّن cookies"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> العملية العميلة هي اللي تبادر بالاتصال، والعملية الخادمة هي اللي تنتظر. وحتى في P2P كل جهاز فيه عملية عميلة وعملية خادمة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل اللي يتصل بالمطعم (عميل) واللي يرد (خادم).</div> <span style=\"opacity:.7\">(صفحة 8)</span>", "id": 10, "page": "صفحة 8"}, {"pg": 8, "type": "tf", "en": "Processes in different hosts communicate by exchanging messages.", "ar": "العمليات في أجهزة مختلفة تتواصل بتبادل الرسائل.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> داخل نفس الجهاز inter-process communication.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل رسائل بين بيتين.</div> <span style=\"opacity:.7\">(صفحة 8)</span>", "id": 11, "page": "صفحة 8"}, {"pg": 9, "type": "mcq", "en": "In the socket analogy, who controls the transport layer and everything below it?", "ar": "في تشبيه الـ socket، مين يتحكم بطبقة transport وكل ما تحتها؟", "opts": {"en": ["The app developer", "The web server only", "The operating system", "The user's browser"], "ar": ["مطوّر التطبيق", "خادم الويب فقط", "نظام التشغيل (OS)", "متصفح المستخدم"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الـ socket مثل الباب: المطوّر يتحكم بالعملية فوقه، وما تحت الباب (transport, network, link, physical) يديره نظام التشغيل.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل ساكن البيت: يرسل رسالته من الباب وشركة البريد تتولى الباقي.</div> <span style=\"opacity:.7\">(صفحة 9)</span>", "id": 12, "page": "صفحة 9"}, {"pg": 9, "type": "tf", "en": "Two sockets are involved in a communication: one on each side.", "ar": "في الاتصال يوجد socketان: واحد في كل طرف.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الـ socket هو الباب عند كل طرف.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> باب لكل بيت.</div> <span style=\"opacity:.7\">(صفحة 9)</span>", "id": 13, "page": "صفحة 9"}, {"pg": 10, "type": "mcq", "en": "Which pair identifies a receiving process on a host?", "ar": "أي زوج يحدد العملية المستقبِلة على الجهاز؟", "opts": {"en": ["MAC address and URL", "Port number and cookie", "IP address and port number", "IP address only"], "ar": ["عنوان MAC وURL", "رقم port وcookie", "عنوان IP ورقم port", "عنوان IP فقط"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الـ IP يوصلك للجهاز بس، لكن على نفس الجهاز عمليات كثيرة تشتغل، فنضيف رقم port يحدد أي عملية. مثلًا خادم الويب على port 80 وخادم البريد على 25.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل عمارة فيها شقق: العنوان يوصلك للعمارة (IP) ورقم الشقة (port) يوصلك للشخص الصح.</div> <span style=\"opacity:.7\">(صفحة 10)</span>", "id": 14, "page": "صفحة 10"}, {"pg": 10, "type": "tf", "en": "The IP address of a host is enough to identify the receiving process on that host.", "ar": "عنوان IP للجهاز يكفي لتحديد العملية المستقبِلة على ذلك الجهاز.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الجهاز الواحد فيه عمليات كثيرة، فنحتاج IP + رقم port لتحديد العملية بالضبط.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل عمارة: العنوان وحده ما يحدد الشقة.</div> <span style=\"opacity:.7\">(صفحة 10)</span>", "id": 15, "page": "صفحة 10"}, {"pg": 10, "type": "mcq", "en": "Which port number is given as an example for a mail server?", "ar": "أي رقم port ذُكر كمثال لخادم البريد؟", "opts": {"en": ["80", "53", "25", "443"], "ar": ["80", "53", "25", "443"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> خادم الويب على 80 وخادم البريد على 25.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> 80 باب الويب و25 باب البريد.</div> <span style=\"opacity:.7\">(صفحة 10)</span>", "id": 16, "page": "صفحة 10"}, {"pg": 10, "type": "mcq", "en": "How long is the unique IP address of a host, as stated in the slides?", "ar": "كم طول عنوان IP الفريد للجهاز حسب الشرائح؟", "opts": {"en": ["16-bit", "48-bit", "64-bit", "32-bit"], "ar": ["16 بت", "48 بت", "64 بت", "32 بت"]}, "correct": 3, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الشرائح تذكر أن للجهاز عنوان IP فريد بطول 32 بت.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل رقم هوية للجهاز.</div> <span style=\"opacity:.7\">(صفحة 10)</span>", "id": 17, "page": "صفحة 10"}, {"pg": 11, "type": "mcq", "en": "Which protocol is given as an example of a proprietary application-layer protocol?", "ar": "أي بروتوكول ذُكر كمثال على بروتوكول طبقة تطبيق مملوك (proprietary)؟", "opts": {"en": ["HTTP", "Zoom", "SMTP", "IMAP"], "ar": ["HTTP", "Zoom", "SMTP", "IMAP"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> البروتوكولات المفتوحة مثل HTTP وSMTP معرّفة في RFCs ويقدر أي أحد يطبّقها. أما Zoom فبروتوكول مملوك لشركته.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل وصفة مطعم سرّية مقابل وصفة منشورة للجميع.</div> <span style=\"opacity:.7\">(صفحة 11)</span>", "id": 18, "page": "صفحة 11"}, {"pg": 11, "type": "mcq", "en": "Which of these is NOT something an application-layer protocol defines?", "ar": "أي مما يلي لا يعرّفه بروتوكول طبقة التطبيق؟", "opts": {"en": ["Types of messages exchanged", "Message syntax and semantics", "Rules for when to send and respond", "The physical cable type"], "ar": ["أنواع الرسائل المتبادلة", "صيغة الرسائل ومعناها", "قواعد متى يرسل ويرد", "نوع الكابل الفيزيائي"]}, "correct": 3, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> البروتوكول يحدد أنواع الرسائل وصيغتها ومعناها وقواعد الإرسال والرد، أما الكابل فمن الطبقة الفيزيائية.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل قواعد حوار، مو نوع الهاتف.</div> <span style=\"opacity:.7\">(صفحة 11)</span>", "id": 19, "page": "صفحة 11"}, {"pg": 11, "type": "tf", "en": "HTTP is a proprietary protocol defined only by one company.", "ar": "HTTP بروتوكول مملوك تعرّفه شركة واحدة فقط.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> HTTP مفتوح ومعرّف في RFCs.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل وصفة منشورة.</div> <span style=\"opacity:.7\">(صفحة 11)</span>", "id": 20, "page": "صفحة 11"}, {"pg": 12, "type": "mcq", "en": "Which application type needs low delay to be effective?", "ar": "أي نوع تطبيقات يحتاج زمن تأخير قليل ليكون فعّالًا؟", "opts": {"en": ["File transfer", "E-mail", "Internet telephony and interactive games", "Web document download"], "ar": ["نقل الملفات", "البريد الإلكتروني", "الاتصال الصوتي عبر الإنترنت والألعاب التفاعلية", "تحميل مستندات الويب"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> المكالمات والألعاب حساسة للزمن (عشرات الملّي ثانية). أما نقل الملفات والبريد فما يهمهم التأخير.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مكالمة فيها تأخير ثواني ما تنفع، لكن إيميل يوصل بعد ثواني عادي.</div> <span style=\"opacity:.7\">(صفحة 12)</span>", "id": 21, "page": "صفحة 12"}, {"pg": 12, "type": "mcq", "en": "Which is a security service an app may need from the transport layer?", "ar": "أي مما يلي خدمة أمان قد يحتاجها التطبيق من طبقة النقل؟", "opts": {"en": ["Elastic throughput", "Encryption and data integrity", "Low delay", "Port numbering"], "ar": ["throughput مرن", "التشفير وسلامة البيانات", "زمن تأخير قليل", "ترقيم المنافذ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الأمان يشمل التشفير وسلامة البيانات.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل ظرف مقفل وختم.</div> <span style=\"opacity:.7\">(صفحة 12)</span>", "id": 22, "page": "صفحة 12"}, {"pg": 12, "type": "mcq", "en": "What describes elastic applications?", "ar": "وش يصف التطبيقات المرنة (elastic)؟", "opts": {"en": ["They need a minimum throughput", "They use whatever throughput they get", "They cannot tolerate delay", "They require encryption"], "ar": ["تحتاج حدًا أدنى من throughput", "تستفيد من أي throughput تحصل عليه", "لا تتحمل التأخير", "تتطلب تشفيرًا"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> مثل نقل الملفات والبريد: تشتغل بأي سرعة، أما الوسائط المتعددة فتحتاج حدًا أدنى.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> تحميل ملف يشتغل بسرعة بطيئة أو سريعة.</div> <span style=\"opacity:.7\">(صفحة 12)</span>", "id": 23, "page": "صفحة 12"}, {"pg": 12, "type": "tf", "en": "All applications require 100% reliable data transfer.", "ar": "كل التطبيقات تتطلب نقل بيانات موثوق 100%.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> بعض التطبيقات مثل الصوت تتحمل فقد.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مكالمة تتحمل تقطيع بسيط.</div> <span style=\"opacity:.7\">(صفحة 12)</span>", "id": 24, "page": "صفحة 12"}, {"pg": 13, "type": "tf", "en": "Real-time audio/video applications are loss-tolerant.", "ar": "تطبيقات الصوت/الفيديو الفوري تتحمل فقدان بعض البيانات.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> في الجدول: الصوت والفيديو loss-tolerant، بينما نقل الملفات والبريد والويب ونصوص الرسائل تحتاج no loss.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> فقدان جزء صغير من صوت المكالمة ما يخرّب الفهم، لكن بايت ناقص في ملف يخرّبه.</div> <span style=\"opacity:.7\">(صفحة 13)</span>", "id": 25, "page": "صفحة 13"}, {"pg": 14, "type": "mcq", "en": "Which service does TCP provide but UDP does not?", "ar": "أي خدمة يوفرها TCP ولا يوفرها UDP؟", "opts": {"en": ["Guaranteed delay", "Reliable transport with flow and congestion control", "Guaranteed minimum throughput", "Built-in encryption"], "ar": ["ضمان زمن التأخير", "نقل موثوق مع flow control وcongestion control", "ضمان حد أدنى للـ throughput", "تشفير مدمج"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> TCP يضمن وصول البيانات سليمة، ويبطّئ المرسل إذا المستقبل أو الشبكة ما تتحمل، ويحتاج اتصال مسبق. لكنه ما يضمن زمن ولا سرعة دنيا ولا تشفير. أما UDP فبدون هذا كله، عشان كذا أسرع وأخف.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> TCP مثل شحنة بتتبع وتأكيد استلام، وUDP مثل رمي رسالة في صندوق بريد بدون تأكيد.</div> <span style=\"opacity:.7\">(صفحة 14)</span>", "id": 26, "page": "صفحة 14"}, {"pg": 14, "type": "tf", "en": "UDP provides reliable data transfer and connection setup.", "ar": "UDP يوفر نقل بيانات موثوق وإعداد اتصال.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> UDP يوفر نقل غير موثوق ولا يوفر reliability ولا flow/congestion control ولا connection setup. هذي الخدمات من TCP.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> UDP مثل رمي رسالة بدون تأكيد استلام.</div> <span style=\"opacity:.7\">(صفحة 14)</span>", "id": 27, "page": "صفحة 14"}, {"pg": 14, "type": "mcq", "en": "What does TCP flow control do?", "ar": "وش تسوي flow control في TCP؟", "opts": {"en": ["Throttles the sender when the network is overloaded", "Prevents the sender from overwhelming the receiver", "Encrypts the data", "Guarantees minimum throughput"], "ar": ["تبطّئ المرسل عند ازدحام الشبكة", "تمنع المرسل من إغراق المستقبِل", "تشفّر البيانات", "تضمن حدًا أدنى للـ throughput"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> flow control لحماية المستقبِل، أما congestion control فلإبطاء المرسل عند ازدحام الشبكة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> لا تصبين الماء أسرع من قدرة الكوب.</div> <span style=\"opacity:.7\">(صفحة 14)</span>", "id": 28, "page": "صفحة 14"}, {"pg": 14, "type": "tf", "en": "TCP guarantees a minimum throughput and timing.", "ar": "TCP يضمن حدًا أدنى من throughput والتوقيت.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> TCP لا يوفر ضمان توقيت ولا throughput ولا أمان.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> شحنة موثوقة بدون وعد بالموعد.</div> <span style=\"opacity:.7\">(صفحة 14)</span>", "id": 29, "page": "صفحة 14"}, {"pg": 15, "type": "tf", "en": "E-mail (SMTP) runs over TCP.", "ar": "البريد الإلكتروني (SMTP) يشتغل فوق TCP.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> من جدول التطبيقات: FTP وSMTP وHTTP كلها فوق TCP لأنها تحتاج نقلًا موثوقًا بدون فقدان.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> الرسالة المهمة تحتاج تسليم مضمون.</div> <span style=\"opacity:.7\">(صفحة 15)</span>", "id": 30, "page": "صفحة 15"}, {"pg": 15, "type": "mcq", "en": "Which transport protocol(s) may Internet telephony use, per the slides?", "ar": "أي بروتوكول نقل قد يستخدمه الاتصال الصوتي عبر الإنترنت حسب الشرائح؟", "opts": {"en": ["TCP only", "UDP only", "TCP or UDP", "Neither"], "ar": ["TCP فقط", "UDP فقط", "TCP أو UDP", "ولا واحد"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> في الجدول: Internet telephony يستخدم TCP أو UDP.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> حسب ظروف الشبكة.</div> <span style=\"opacity:.7\">(صفحة 15)</span>", "id": 31, "page": "صفحة 15"}, {"pg": 16, "type": "tf", "en": "Vanilla TCP and UDP sockets encrypt the data by default.", "ar": "سوكتات TCP وUDP العادية تشفّر البيانات تلقائيًا.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> العاديين يرسلون كل شي cleartext حتى كلمات السر. التشفير يجي من TLS اللي يشتغل في طبقة التطبيق فوق TCP، ويعطي تشفير وسلامة بيانات وتحقق من هوية الطرف الثاني.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل بطاقة بريدية مكشوفة مقابل ظرف مقفل: TLS هو الظرف.</div> <span style=\"opacity:.7\">(صفحة 16)</span>", "id": 32, "page": "صفحة 16"}, {"pg": 16, "type": "tf", "en": "TLS is implemented in the application layer, using TCP underneath.", "ar": "TLS يُنفّذ في طبقة التطبيق ويستخدم TCP تحته.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> التطبيقات تستخدم مكتبات TLS التي تستخدم TCP، فيمر النص المرسل في الـ socket مشفّرًا عبر الإنترنت. وTLS يعطي تشفير وسلامة بيانات وتحقق من هوية الطرف.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل وضع الرسالة في ظرف مقفل قبل تسليمها للبريد.</div> <span style=\"opacity:.7\">(صفحة 16)</span>", "id": 33, "page": "صفحة 16"}, {"pg": 18, "type": "mcq", "en": "In www.someschool.edu/someDept/pic.gif, what is the host name?", "ar": "في www.someschool.edu/someDept/pic.gif ما هو host name؟", "opts": {"en": ["someDept/pic.gif", "pic.gif", "www.someschool.edu", "someDept"], "ar": ["someDept/pic.gif", "pic.gif", "www.someschool.edu", "someDept"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الـ URL = host name + path name، والجزء الأول هو اسم الجهاز.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل العمارة ثم رقم الشقة.</div> <span style=\"opacity:.7\">(صفحة 18)</span>", "id": 34, "page": "صفحة 18"}, {"pg": 19, "type": "mcq", "en": "On which port does an HTTP client initiate its TCP connection to a Web server?", "ar": "على أي port يبدأ عميل HTTP اتصال TCP مع خادم الويب؟", "opts": {"en": ["25", "80", "443 only", "53"], "ar": ["25", "80", "443 فقط", "53"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> حسب الشريحة: العميل يفتح اتصال TCP إلى الخادم على port 80 (و25 لخادم البريد).</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> 80 باب الويب، و25 باب البريد.</div> <span style=\"opacity:.7\">(صفحة 19)</span>", "id": 35, "page": "صفحة 19"}, {"pg": 20, "type": "tf", "en": "HTTP is stateless: the server keeps no information about past client requests.", "ar": "بروتوكول HTTP بلا حالة (stateless): الخادم ما يحتفظ بأي معلومات عن طلبات العميل السابقة.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> كل طلب HTTP مستقل، والخادم ما يتذكر شي. هذا يبسّط التصميم لأنه ما فيه حالة تحتاج استرجاع لو انقطع الاتصال أو تعطل أحد الطرفين. ولو نبغى حالة نستخدم cookies.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل كاشير ما يتذكر وجهك: كل مرة تعرّفين بنفسك من جديد.</div> <span style=\"opacity:.7\">(صفحة 20)</span>", "id": 36, "page": "صفحة 20"}, {"pg": 20, "type": "tf", "en": "An HTTP server must remember information about past client requests.", "ar": "يجب أن يتذكر خادم HTTP معلومات عن طلبات العميل السابقة.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> HTTP stateless.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> كاشير ما يتذكر وجهك.</div> <span style=\"opacity:.7\">(صفحة 20)</span>", "id": 37, "page": "صفحة 20"}, {"pg": 21, "type": "tf", "en": "In non-persistent HTTP, at most one object is sent over each TCP connection.", "ar": "في HTTP غير المستمر، يُرسل كائن واحد على الأكثر عبر كل اتصال TCP.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الاتصال يُفتح، يُرسل كائن واحد، ثم يُغلق. فتحميل عدة كائنات يتطلب اتصالات متعددة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل مكالمة جديدة لكل سؤال.</div> <span style=\"opacity:.7\">(صفحة 21)</span>", "id": 38, "page": "صفحة 21"}, {"pg": 24, "type": "mcq", "en": "What is the response time for one object in non-persistent HTTP?", "ar": "كم زمن الاستجابة لكل كائن في HTTP غير المستمر؟", "opts": {"en": ["1 RTT + file transmission time", "RTT only", "3 RTT + file transmission time", "2 RTT + file transmission time"], "ar": ["RTT واحد + زمن إرسال الملف", "RTT فقط", "3 RTT + زمن إرسال الملف", "2 RTT + زمن إرسال الملف"]}, "correct": 3, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> RTT لفتح اتصال TCP، وRTT ثاني لإرسال طلب HTTP ووصول أول بايتات الرد، وبعدها زمن إرسال الملف نفسه. عشان كذا الـ non-persistent بطيء لما تكثر الكائنات.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> كل مرة تتصلين وتنتظرين الرد (RTT)، وبعدها تسألين وتنتظرين مرة ثانية (RTT) قبل ما توصل الإجابة.</div> <span style=\"opacity:.7\">(صفحة 24)</span>", "id": 39, "page": "صفحة 24"}, {"pg": 24, "type": "tf", "en": "RTT is the time for a small packet to travel from client to server and back.", "ar": "الـ RTT هو الزمن اللازم لحزمة صغيرة لتنتقل من العميل للخادم وترجع.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> هذا تعريف الـ RTT، وهو أساس حساب زمن الاستجابة في HTTP (2RTT + زمن إرسال الملف في غير المستمر).</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل تقيسين وقت رمي كرة للحائط ورجوعها.</div> <span style=\"opacity:.7\">(صفحة 24)</span>", "id": 40, "page": "صفحة 24"}, {"pg": 25, "type": "tf", "en": "In persistent HTTP (HTTP/1.1) the server leaves the connection open, so all referenced objects can take as little as one RTT.", "ar": "في HTTP المستمر (HTTP/1.1) يترك الخادم الاتصال مفتوحًا، فممكن تحتاج كل الكائنات المرجعية RTT واحد فقط.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الاتصال يتفتح مرة وحدة وتنرسل عليه كل الطلبات أول ما المتصفح يلقى كائن جديد، فنوفّر RTT لكل كائن ونقلل عبء نظام التشغيل على كل اتصال. هذا يقصّ زمن الاستجابة للنصف تقريبًا.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> بدل ما تتصلين بالمطعم لكل صنف، تتصلين مرة وتطلبين كل الأصناف.</div> <span style=\"opacity:.7\">(صفحة 25)</span>", "id": 41, "page": "صفحة 25"}, {"pg": 25, "type": "mcq", "en": "In persistent HTTP, how many RTTs may all referenced objects take as little as?", "ar": "في HTTP المستمر، كم RTT قد تحتاجه كل الكائنات المرجعية كحد أدنى؟", "opts": {"en": ["One RTT", "Two per object", "Three RTTs", "Zero"], "ar": ["RTT واحد", "اثنان لكل كائن", "ثلاثة", "صفر"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الاتصال مفتوح والطلبات تُرسل فور اكتشاف الكائنات، فقد يكفي RTT واحد، ما يقلل الزمن للنصف.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> اتصلتي مرة وطلبتي كل شي.</div> <span style=\"opacity:.7\">(صفحة 25)</span>", "id": 42, "page": "صفحة 25"}, {"pg": 25, "type": "tf", "en": "Browsers often open multiple parallel TCP connections to fetch referenced objects in parallel.", "ar": "المتصفحات غالبًا تفتح عدة اتصالات TCP متوازية لجلب الكائنات.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> حل لتقليل بطء non-persistent.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> عدة كاشيرات.</div> <span style=\"opacity:.7\">(صفحة 25)</span>", "id": 43, "page": "صفحة 25"}, {"pg": 26, "type": "mcq", "en": "In an HTTP request message, what indicates the end of the header lines?", "ar": "في رسالة طلب HTTP، ما الذي يدل على نهاية سطور الـ headers؟", "opts": {"en": ["A semicolon", "A carriage return and line feed on an otherwise empty line", "The word END", "A closing HTML tag"], "ar": ["فاصلة منقوطة", "سطر فاضي فيه carriage return وline feed", "كلمة END", "وسم HTML للإغلاق"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الرسالة بصيغة ASCII، وكل سطر ينتهي بـ \\r\\n، والسطر الفاضي (\\r\\n وحده) يعلن نهاية الـ headers.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل سطر فاضي بين ترويسة الخطاب ونصه.</div> <span style=\"opacity:.7\">(صفحة 26)</span>", "id": 44, "page": "صفحة 26"}, {"pg": 26, "type": "mcq", "en": "In 'GET /index.html HTTP/1.1', what is the first line of an HTTP request called?", "ar": "في 'GET /index.html HTTP/1.1' ما اسم السطر الأول في طلب HTTP؟", "opts": {"en": ["Status line", "Header line", "Request line", "Entity body"], "ar": ["status line", "header line", "request line", "entity body"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> السطر الأول request line: method وURL وversion. الـ status line للرد.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> أول سطر يقول وش تبغين.</div> <span style=\"opacity:.7\">(صفحة 26)</span>", "id": 45, "page": "صفحة 26"}, {"pg": 28, "type": "tf", "en": "The PUT method uploads a new object to the server and completely replaces the file at the specified URL.", "ar": "طريقة PUT ترفع كائنًا جديدًا للخادم وتستبدل تمامًا الملف الموجود عند الـ URL المحدد.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> PUT للرفع: محتوى الملف يروح في entity body ويحل محل الملف القديم بالكامل. أما GET فللطلب، وPOST لإرسال بيانات النماذج، وHEAD يرجّع الـ headers فقط بدون الكائن.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل استبدال ملف في درايف بنسخة جديدة بنفس الاسم.</div> <span style=\"opacity:.7\">(صفحة 28)</span>", "id": 46, "page": "صفحة 28"}, {"pg": 28, "type": "mcq", "en": "What does the HEAD method request?", "ar": "وش يطلب الأسلوب HEAD؟", "opts": {"en": ["Only the headers that would be returned for a GET", "The full object and its headers", "Uploading a new file", "Submitting form data in the body"], "ar": ["الـ headers فقط التي كانت سترجع مع GET", "الكائن كاملًا مع الـ headers", "رفع ملف جديد", "إرسال بيانات نموذج في الـ body"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> HEAD يرجّع headers بدون الكائن، مفيد للتحقق من وجوده أو تعديله دون تنزيله.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل تسألين عن حجم الملف دون تحميله.</div> <span style=\"opacity:.7\">(صفحة 28)</span>", "id": 47, "page": "صفحة 28"}, {"pg": 28, "type": "tf", "en": "A GET request can send user data by including it in the URL after a '?'.", "ar": "طلب GET يقدر يرسل بيانات المستخدم بوضعها في الـ URL بعد علامة '?'.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> في GET تُضاف البيانات للـ URL بعد ?، أما POST فتُرسل في entity body.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل كتابة طلبك في عنوان الرسالة.</div> <span style=\"opacity:.7\">(صفحة 28)</span>", "id": 48, "page": "صفحة 28"}, {"pg": 29, "type": "mcq", "en": "Which header in the HTTP response gives the last modification time of the object?", "ar": "أي header في رد HTTP يعطي وقت آخر تعديل للكائن؟", "opts": {"en": ["Server", "Content-Type", "Content-Length", "Last-Modified"], "ar": ["Server", "Content-Type", "Content-Length", "Last-Modified"]}, "correct": 3, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> Last-Modified يحدد آخر تعديل، وContent-Length حجم الكائن، وContent-Type نوعه.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> تاريخ التعديل على غلاف الملف.</div> <span style=\"opacity:.7\">(صفحة 29)</span>", "id": 49, "page": "صفحة 29"}, {"pg": 29, "type": "tf", "en": "The first line of an HTTP response is the status line.", "ar": "السطر الأول في رد HTTP هو status line.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> يحتوي النسخة وكود الحالة وعبارته.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل 'HTTP/1.1 200 OK'.</div> <span style=\"opacity:.7\">(صفحة 29)</span>", "id": 50, "page": "صفحة 29"}, {"pg": 30, "type": "mcq", "en": "Which HTTP status code means the requested document was not found on the server?", "ar": "أي كود حالة HTTP يعني أن المستند المطلوب غير موجود على الخادم؟", "opts": {"en": ["200 OK", "301 Moved Permanently", "404 Not Found", "400 Bad Request"], "ar": ["200 OK", "301 Moved Permanently", "404 Not Found", "400 Bad Request"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الكود يظهر في أول سطر من رد الخادم. 200 نجاح، 301 الكائن انتقل لمكان جديد (في حقل Location)، 400 الخادم ما فهم الطلب، 404 المستند ما لقاه، و505 النسخة غير مدعومة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل تروحين رف في المكتبة وتلقينه فاضي: الكتاب مو موجود (404).</div> <span style=\"opacity:.7\">(صفحة 30)</span>", "id": 51, "page": "صفحة 30"}, {"pg": 30, "type": "mcq", "en": "What does status code 505 mean?", "ar": "وش يعني كود الحالة 505؟", "opts": {"en": ["Not Found", "Bad Request", "Moved Permanently", "HTTP Version Not Supported"], "ar": ["غير موجود", "طلب سيء", "انتقل نهائيًا", "نسخة HTTP غير مدعومة"]}, "correct": 3, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> 505 يعني أن الخادم لا يدعم نسخة HTTP في الطلب. و404 غير موجود، 400 طلب غير مفهوم، 301 انتقل لمكان جديد.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل جهاز ما يقرأ صيغة ملفك.</div> <span style=\"opacity:.7\">(صفحة 30)</span>", "id": 52, "page": "صفحة 30"}, {"pg": 30, "type": "mcq", "en": "Where is the new location specified for a 301 Moved Permanently response?", "ar": "أين يُحدَّد المكان الجديد في رد 301 Moved Permanently؟", "opts": {"en": ["In the Location: header field", "In the request line", "In the cookie file", "In the DNS record"], "ar": ["في حقل Location", "في request line", "في ملف cookie", "في سجل DNS"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> 301 يعني الكائن انتقل، والعنوان الجديد في حقل Location.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> لافتة: انتقلنا إلى هذا العنوان.</div> <span style=\"opacity:.7\">(صفحة 30)</span>", "id": 53, "page": "صفحة 30"}, {"pg": 33, "type": "mcq", "en": "Which is NOT one of the four components of cookie technology?", "ar": "أي مما يلي ليس من المكوّنات الأربعة لتقنية الـ cookies؟", "opts": {"en": ["Cookie header line in the HTTP response", "Cookie header line in the next HTTP request", "A DNS server that stores the user's cookies", "Back-end database at the Web site"], "ar": ["سطر cookie في رسالة رد HTTP", "سطر cookie في رسالة طلب HTTP التالية", "خادم DNS يخزّن cookies المستخدم", "قاعدة بيانات خلفية عند الموقع"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> المكوّنات الأربعة: سطر cookie في الرد، وسطر cookie في الطلب التالي، وملف cookie على جهاز المستخدم يديره المتصفح، وقاعدة بيانات خلفية عند الموقع. خادم DNS ما له علاقة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل بطاقة عضوية: الموقع يعطيك رقم، وتعرضينه كل زيارة، والموقع يبحث عنه في سجلاته.</div> <span style=\"opacity:.7\">(صفحة 33)</span>", "id": 54, "page": "صفحة 33"}, {"pg": 33, "type": "tf", "en": "The cookie file is kept on the Web server's host.", "ar": "ملف cookie يُحفظ على جهاز خادم الموقع.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> يُحفظ على جهاز المستخدم ويديره المتصفح.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> البطاقة في محفظتك.</div> <span style=\"opacity:.7\">(صفحة 33)</span>", "id": 55, "page": "صفحة 33"}, {"pg": 35, "type": "mcq", "en": "Which is NOT a typical use of cookies?", "ar": "أي مما يلي ليس استخدامًا شائعًا للـ cookies؟", "opts": {"en": ["Shopping carts", "Authorization", "Encrypting the TCP connection", "Recommendations"], "ar": ["عربات التسوق", "التفويض", "تشفير اتصال TCP", "التوصيات"]}, "correct": 2, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> cookies للتفويض وعربات التسوق والتوصيات وحالة الجلسة. التشفير من TLS.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> البطاقة تعرّف بك لا تقفل الباب.</div> <span style=\"opacity:.7\">(صفحة 35)</span>", "id": 56, "page": "صفحة 35"}, {"pg": 36, "type": "tf", "en": "A third-party cookie comes from a website the user did not choose to visit, which lets it track the user across multiple sites.", "ar": "الـ third-party cookie تأتي من موقع لم يختر المستخدم زيارته، وهذا يتيح له تتبع المستخدم عبر مواقع متعددة.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الإعلان المضمّن في صفحة (مثل AdX) يطلب منك من موقع ثاني ويعطيك cookie خاص به، ولما تتصفحين مواقع فيها نفس الإعلانات يعرف تاريخك ويرجّع إعلانات موجهة. الـ first-party cookie فقط من الموقع اللي اخترتي تزورينه.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل شخص يمشي وراءك من متجر لمتجر ويدوّن وش تشاهدين.</div> <span style=\"opacity:.7\">(صفحة 36)</span>", "id": 57, "page": "صفحة 36"}, {"pg": 36, "type": "tf", "en": "The first-party cookie comes from the website the user chose to visit.", "ar": "الـ first-party cookie تأتي من الموقع الذي اختار المستخدم زيارته.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> First-party من الموقع الذي تزوره (مصدر base HTML)، وthird-party من موقع آخر (مثل AdX) يتتبعك عبر مواقع.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل موظف المحل يعرفك مقابل شخص يتتبعك بين المحلات.</div> <span style=\"opacity:.7\">(صفحة 36)</span>", "id": 58, "page": "صفحة 36"}, {"pg": 43, "type": "tf", "en": "A Web cache acts only as a server and never as a client.", "ar": "الـ Web cache تعمل كخادم فقط ولا تعمل كعميل أبدًا.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الكاش يلعب الدورين: خادم للعميل اللي طلب، وعميل للـ origin server لما ما يلقى الكائن عنده. بعدين يحفظ النسخة ويرجّعها للعميل.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل بقالة الحي: تبيعك من مخزونها، ولو ما عندها تطلب من المورّد ثم تبيعك.</div> <span style=\"opacity:.7\">(صفحة 43)</span>", "id": 59, "page": "صفحة 43"}, {"pg": 43, "type": "mcq", "en": "Why is Web caching used?", "ar": "لماذا نستخدم Web caching؟", "opts": {"en": ["To encrypt traffic", "To reduce response time and traffic on an institution's access link", "To increase RTT", "To replace DNS"], "ar": ["لتشفير الحركة", "لتقليل زمن الاستجابة وحركة وصلة المؤسسة", "لزيادة RTT", "لاستبدال DNS"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الكاش أقرب للعميل فيقلل التأخير والضغط على الوصلة.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل بقالة الحي.</div> <span style=\"opacity:.7\">(صفحة 43)</span>", "id": 60, "page": "صفحة 43"}, {"pg": 43, "type": "tf", "en": "A server can tell a cache the allowable caching of an object with the Cache-Control header.", "ar": "يستطيع الخادم إخبار الكاش بمدة التخزين المسموحة عبر Cache-Control.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> مثل max-age=<seconds> أو no-cache.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> تاريخ صلاحية.</div> <span style=\"opacity:.7\">(صفحة 43)</span>", "id": 61, "page": "صفحة 43"}, {"pg": 45, "type": "tf", "en": "Buying a faster 154 Mbps access link is cheap compared with installing a web cache.", "ar": "شراء وصلة وصول أسرع 154 Mbps رخيص مقارنة بتركيب web cache.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> في الشريحة الوصلة الأسرع تكلفتها عالية (expensive!) والكاش رخيص، والكاش يعطي تأخيرًا متوسطًا أقل (~1.2 ثانية).</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> توسيع الطريق مكلف، وفتح مستودع قريب أرخص.</div> <span style=\"opacity:.7\">(صفحة 45)</span>", "id": 62, "page": "صفحة 45"}, {"pg": 47, "type": "tf", "en": "In the lecture example, a cache hit rate of 0.4 reduces access link utilization to about 0.58.", "ar": "في مثال المحاضرة، معدل إصابة cache يساوي 0.4 يخفّض استخدام وصلة الوصول إلى حوالي 0.58.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> 40% من الطلبات يخدمها الكاش، يعني 60% فقط تمر على الوصلة: 0.6 × 1.5 = 0.9 Mbps، ثم 0.9/1.54 ≈ 0.58. والمتوسط 0.6(2.01) + 0.4(~ms) ≈ 1.2 ثانية، أحسن من وصلة 154 Mbps وأرخص.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل نصف طلباتك تنحل من الثلاجة بدل ما تروحين السوق، فتقلّ زحمة الطريق.</div> <span style=\"opacity:.7\">(صفحة 47)</span>", "id": 63, "page": "صفحة 47"}, {"pg": 47, "type": "mcq", "en": "In the cache example (hit rate 0.4), what is the approximate average end-end delay?", "ar": "في مثال الكاش (hit rate = 0.4)، كم متوسط التأخير end-end تقريبًا؟", "opts": {"en": ["~1.2 seconds", "~2 minutes", "~2.01 seconds", "~1 msec"], "ar": ["~1.2 ثانية", "~2 دقيقة", "~2.01 ثانية", "~1 ملّي ثانية"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> 0.6(2.01)+0.4(~ms) ≈ 1.2 ثانية، أحسن من وصلة 154 Mbps وأرخص.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> 60% بعيد و40% قريب.</div> <span style=\"opacity:.7\">(صفحة 47)</span>", "id": 64, "page": "صفحة 47"}, {"pg": 47, "type": "tf", "en": "With a 0.4 hit rate, only 60% of requests travel over the access link.", "ar": "مع hit rate = 0.4 فقط 60% من الطلبات تمر عبر وصلة الوصول.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> 0.6×1.5=0.9 Mbps.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> 40% تنحل محليًا.</div> <span style=\"opacity:.7\">(صفحة 47)</span>", "id": 65, "page": "صفحة 47"}, {"pg": 48, "type": "mcq", "en": "In a conditional GET, what does the server return if the browser's cached copy is up to date?", "ar": "في الـ conditional GET، ماذا يرجّع الخادم إذا كانت النسخة المخزنة في المتصفح محدّثة؟", "opts": {"en": ["HTTP 304 Not Modified, with no object", "HTTP 200 OK with the full object", "404 Not Found", "301 Moved Permanently"], "ar": ["304 Not Modified بدون الكائن", "200 OK مع الكائن كاملًا", "404 Not Found", "301 Moved Permanently"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> المتصفح يرسل If-modified-since بتاريخ نسخته، فإذا ما تغيّر الكائن يرد الخادم 304 بدون بيانات، فنوفر زمن الإرسال وموارد الشبكة. وإذا تغيّر يرسل 200 OK مع الكائن الجديد.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل تسألين صاحبة السلة: «تغيّر شي من آخر مرة؟» تقول لا، فما تحتاجين تشتري من جديد.</div> <span style=\"opacity:.7\">(صفحة 48)</span>", "id": 66, "page": "صفحة 48"}, {"pg": 49, "type": "mcq", "en": "In HTTP/1.1 with FCFS scheduling, what problem can occur?", "ar": "في HTTP/1.1 مع جدولة FCFS، أي مشكلة قد تحصل؟", "opts": {"en": ["Cookies expire", "Small objects wait behind large ones (HOL blocking)", "The server forgets the client", "Port numbers change"], "ar": ["تنتهي cookies", "الكائنات الصغيرة تنتظر وراء الكبيرة (HOL blocking)", "الخادم ينسى العميل", "تتغير أرقام المنافذ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> الرد بالترتيب فيتأخر الصغير وراء الكبير، وHTTP/2 يحل هذا بالـ frames.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> زبون بحاجة وحدة خلف عربة ضخمة.</div> <span style=\"opacity:.7\">(صفحة 49)</span>", "id": 67, "page": "صفحة 49"}, {"pg": 50, "type": "tf", "en": "HTTP/2 lets the server push unrequested objects to the client.", "ar": "HTTP/2 يتيح للخادم دفع كائنات لم تُطلب إلى العميل.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 0, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> من مزايا HTTP/2: ترتيب الإرسال حسب أولوية العميل، وpush لكائنات غير مطلوبة، وتقسيم الكائنات إلى frames لتخفيف HOL blocking.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل مطعم يرسل المقبلات قبل أن تطلبيها.</div> <span style=\"opacity:.7\">(صفحة 50)</span>", "id": 68, "page": "صفحة 50"}, {"pg": 50, "type": "tf", "en": "HTTP/2 requires objects to be sent strictly in first-come-first-served order.", "ar": "HTTP/2 يتطلب إرسال الكائنات بالترتيب بنظام FCFS فقط.", "opts": {"en": ["True", "False"], "ar": ["صح", "خطأ"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> HTTP/2 يعتمد أولوية العميل وframes.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> الأهم يتقدم.</div> <span style=\"opacity:.7\">(صفحة 50)</span>", "id": 69, "page": "صفحة 50"}, {"pg": 51, "type": "mcq", "en": "How does HTTP/2 mitigate head-of-line (HOL) blocking?", "ar": "كيف يخفف HTTP/2 مشكلة الحجب في رأس الطابور (HOL blocking)؟", "opts": {"en": ["By closing the TCP connection after every object", "By dividing objects into frames and interleaving their transmission", "By always answering requests first-come-first-served", "By removing the Host header"], "ar": ["بإغلاق اتصال TCP بعد كل كائن", "بتقسيم الكائنات إلى frames وتبديل إرسالها بالتناوب", "بالرد دايمًا على الطلبات بنظام الأول يخدم أولًا", "بحذف الـ Host header"]}, "correct": 1, "ex": "<div class=\"xs\"><b>🧠 الفكرة:</b> في HTTP/1.1 الكائنات الصغيرة تنتظر وراء كائن كبير لأن الرد بنظام FCFS. في HTTP/2 كل كائن يتقسم frames وتتناوب، فالصغيرة تخلص بسرعة والكبير يتأخر شوي.</div><div class=\"xs\"><b>🌍 مثال من الواقع:</b> مثل كاشير يخدم زبون عربته ضخمة وخلفه ناس بحاجة وحدة: الأفضل يخدمهم بالتناوب.</div> <span style=\"opacity:.7\">(صفحة 51)</span>", "id": 70, "page": "صفحة 51"}];
+const N=QUESTIONS.length;
+
+
+const successPhrases = ["أحسنت عريب كمّلي يا بطلة! 🏆","ممتاز يا عريب! أنتِ نجمة الإدارة 🌟","برافو عريب! استمري على هذا التألق 🚀","عاش يا وحش! إجابة ملكية 👑","أسطوري يا عريب! اختبار الميد لك بإذن الله 💎","ما شاء الله عليك! عقلك تحليلي ذهبي ✨"];
+const failPhrases = ["حاولي مرة أخرى يا عريب، أنتِ تقدرين! 💪","لا بأس يا بطلة، ركّزي وحاولي مجددًا 🔄","قريب جدًا! المحاولة القادمة لك يا عريب 🎯","الفشل أول خطوة للنجاح، حاولي مرة أخرى ❤️‍🔥"];
+let qi=0;
+let state = QUESTIONS.map(()=>({chosen:null,first:null,attempts:0,done:false,skipped:false,firstCorrect:null}));
+let translated = new Set();
+let translateAll=false;
+let bookmarked=new Set();
+let mode='train';
+let soundOn=true;
+let xp=0, streak=0, bestStreak=0, correctFirst=0;
+let seconds=0, timerInt=null, started=false;
+let filter='all', showOnlyWrong=false;
+let audioCtx=null;
+let charts=[];
+
+/* AUDIO */
+function ctx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); return audioCtx; }
+function tone(f,t,d,type='sine',v=.22,when=0){ if(!soundOn) return; try{ const c=ctx(),o=c.createOscillator(),g=c.createGain(); o.type=type;o.frequency.value=f; const s=c.currentTime+when; g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(v,s+.02); g.gain.exponentialRampToValueAtTime(0.0001,s+d); o.connect(g);g.connect(c.destination);o.start(s);o.stop(s+d+.05);}catch(e){} }
+function playClick(){ tone(600,0,.12,'sine',.12); }
+function playSuccess(){ if(!soundOn) return; [523,659,784,1046,1318].forEach((f,i)=>tone(f,0,.35,'triangle',.22,i*.09)); tone(2093,0,.5,'sine',.12,.5); setTimeout(()=>{ [1046,1318,1568].forEach((f,i)=>tone(f,0,.3,'sine',.15,i*.07)); },450); }
+function playFail(){ if(!soundOn) return; tone(220,0,.3,'sawtooth',.12); tone(174,0,.4,'sawtooth',.12,.15); }
+function playFinish(){ if(!soundOn) return; [523,523,523,659,784,1046,784,1046,1318,1568,2093].forEach((f,i)=>tone(f,0,.35,'triangle',.2,i*.13)); }
+function toggleSound(){ soundOn=!soundOn; document.getElementById('soundBtn').textContent=soundOn?'🔊':'🔇'; if(soundOn) playClick(); toast(soundOn?'🔊 تم تفعيل الأصوات التحفيزية':'🔇 تم كتم الصوت'); }
+
+/* HELPERS */
+function scrollToQuiz(){ document.getElementById('quizSection').scrollIntoView({behavior:'smooth'}); if(!started) startTimer(); playClick(); }
+function setMode(m){ mode=m; playClick(); const t=document.getElementById('modeTrain'),e=document.getElementById('modeExam'); if(m==='train'){ t.classList.add('border-[#D4AF37]'); t.classList.remove('border-transparent'); e.classList.remove('border-[#D4AF37]'); e.classList.add('border-transparent'); t.querySelector('div:last-child').textContent='● مُفعّل الآن'; t.querySelector('div:last-child').className='text-[11px] mt-2 font-black text-green-400'; document.getElementById('examLabel').textContent='○ اضغطي للتفعيل'; document.getElementById('examLabel').className='text-[11px] mt-2 font-black text-white/40'; toast('🎓 وضع التدريب: يمكنك المحاولة مجددًا للتعلم'); } else { e.classList.add('border-[#D4AF37]'); e.classList.remove('border-transparent'); t.classList.remove('border-[#D4AF37]'); t.classList.add('border-transparent'); document.getElementById('examLabel').textContent='● مُفعّل الآن'; document.getElementById('examLabel').className='text-[11px] mt-2 font-black text-green-400'; toast('⏱️ وضع اختبار الميد الحقيقي: محاولة واحدة فقط يا بطلة!'); } }
+function startTimer(){ if(started) return; started=true; timerInt=setInterval(()=>{ seconds++; const m=String(Math.floor(seconds/60)).padStart(2,'0'),s=String(seconds%60).padStart(2,'0'); document.getElementById('timerHero').textContent=`${m}:${s}`; },1000); }
+function fmt(s){ return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+function toast(msg){ const w=document.getElementById('toastWrap'); const d=document.createElement('div'); d.className='toast pointer-events-auto glass gold-border rounded-2xl px-5 py-3 font-bold text-sm text-center shadow-2xl'; d.innerHTML=msg; w.appendChild(d); setTimeout(()=>{ d.style.opacity='0'; d.style.transform='translateY(10px)'; setTimeout(()=>d.remove(),400); },2600); }
+function goldConfettiBig(){ const end=Date.now()+1200; (function f(){ confetti({particleCount:3,angle:60,spread:60,origin:{x:0},colors:['#D4AF37','#F5D67B','#FFF6C8','#fff']}); confetti({particleCount:3,angle:120,spread:60,origin:{x:1},colors:['#D4AF37','#F5D67B','#FFF6C8','#fff']}); if(Date.now()<end) requestAnimationFrame(f); })(); confetti({particleCount:120,spread:100,origin:{y:.6},colors:['#D4AF37','#F5D67B','#ffffff','#22c55e']}); }
+function smallConfetti(){ confetti({particleCount:22,spread:70,origin:{y:.7},colors:['#D4AF37','#F5D67B','#fff','#22c55e']}); }
+
+/* RENDER */
+function renderQuestion(){
+const q=QUESTIONS[qi], st=state[qi];
+document.getElementById('qCounter').textContent=`السؤال ${qi+1} / ${N}`;
+document.getElementById('heroQpos').textContent=qi+1;
+document.getElementById('qPageBadge').textContent=`📘 ${q.page}`;
+document.getElementById('qTypeBadge').textContent=q.type==='tf'?'صح / خطأ • True / False':'اختياري • Multiple Choice';
+document.getElementById('qEn').innerHTML=`<span class="text-[#F5D67B] font-black">Q${q.id}.</span> ${q.en}`;
+const showTr = translateAll || translated.has(qi);
+document.getElementById('qArBox').classList.toggle('hidden',!showTr);
+document.getElementById('qAr').textContent=q.ar;
+document.getElementById('trBtn').textContent=showTr?'🙈 إخفاء الترجمة':'🌐 ترجم';
+document.getElementById('trBtn').className=showTr?'rounded-xl px-4 py-2.5 font-black text-sm bg-white/15 border border-[#D4AF37]':'rounded-xl px-4 py-2.5 font-black text-sm btn-gold';
+document.getElementById('bmBtn').textContent=bookmarked.has(qi)?'⭐':'🤍';
+const ab=document.getElementById('attemptBadge');
+if(st.attempts>0 && !st.done){ ab.classList.remove('hidden'); ab.textContent=`🔄 المحاولة ${st.attempts+1}`; } else ab.classList.add('hidden');
+const grid=document.getElementById('optsGrid'); grid.innerHTML='';
+const letters=q.type==='tf'?['✓','✕']:['A','B','C','D'];
+q.opts.en.forEach((oe,i)=>{
+const b=document.createElement('button'); b.className='opt'; b.id=`opt${i}`;
+const isCorrectOpt = st.done && i===q.correct;
+const isWrongChosen = st.done && st.first!==null && st.chosen===i && i!==q.correct && mode==='exam';
+const isDisabledWrong = mode==='train' && st.wrongTried && st.wrongTried.includes(i);
+if(isCorrectOpt) b.classList.add('correct');
+if(isWrongChosen) b.classList.add('wrong');
+if(isDisabledWrong){ b.classList.add('dim'); b.disabled=true; }
+if(st.done && mode==='exam') b.disabled=true;
+if(st.done && mode==='train' && st.finalDone) b.disabled=true;
+b.innerHTML=`<span class="opt-letter">${letters[i]}</span><span class="flex-1"><span dir="ltr" class="block text-left font-pop font-semibold leading-7">${oe}</span><span class="block mt-1 text-[13px] font-bold ${showTr?'':'hidden'} text-[#F5D67B] opt-ar-trans">${q.opts.ar[i]}</span></span><span class="text-xl result-ico">${isCorrectOpt?'✅':(isWrongChosen?'❌':'')}</span>`;
+b.onclick=()=>answer(i);
+grid.appendChild(b);
+});
+// feedback
+const fb=document.getElementById('feedbackBox'), ex=document.getElementById('explainBox');
+fb.classList.add('hidden'); ex.classList.add('hidden');
+if(st.done){
+if(st.firstCorrect){ fb.classList.remove('hidden'); fb.className='mt-5 rounded-2xl p-5 text-center font-black text-lg pop feedback-ok'; fb.innerHTML=`🎉 ${st.successMsg||'أحسنت عريب كمّلي يا بطلة! 🏆'}<div class="text-xs font-bold text-green-200 mt-1">إجابة صحيحة من ${st.attempts===0?'أول محاولة':'المحاولة '+(st.attempts+1)} • +${st.attempts===0?10:5} XP</div>`; }
+else if(mode==='exam'){ fb.classList.remove('hidden'); fb.className='mt-5 rounded-2xl p-5 text-center font-black text-lg pop feedback-bad'; fb.innerHTML=`💪 حاولي مرة أخرى يا عريب في السؤال القادم!<div class="text-sm mt-1">الإجابة الصحيحة: <b class="text-green-300">${q.opts.en[q.correct]}</b> • <b class="text-[#F5D67B]">${q.opts.ar[q.correct]}</b></div>`; }
+showExplain();
+if(st.finalDone && !st.firstCorrect){ fb.classList.remove('hidden'); fb.className='mt-5 rounded-2xl p-5 text-center font-black text-lg pop feedback-ok'; fb.innerHTML=`👏 أحسنت عريب! وصلت للصح بعد التعلم 💡<div class="text-xs mt-1 text-white/70">أول إجابة كانت خاطئة (محسوبة للمراجعة) لكن إصرارك بطولي — أكملي!</div>`; }
+} else if(st.attempts>0){
+fb.classList.remove('hidden'); fb.className='mt-5 rounded-2xl p-5 text-center font-black text-lg pop feedback-bad'; fb.innerHTML=`${failPhrases[st.attempts%failPhrases.length]}<div class="text-sm text-white/70 mt-1">اختاري إجابة أخرى يا بطلة — أنتِ تقدرين! 🔥</div>`;
+}
+updateProgress(); renderPalette();
+document.getElementById('qCard').classList.remove('shake');
+}
+function showExplain(){ const q=QUESTIONS[qi]; const ex=document.getElementById('explainBox'); ex.classList.remove('hidden'); ex.innerHTML=`<b class="text-[#F5D67B]">💡 الشرح الذهبي</b> ${q.ex}`; }
+
+function answer(i){
+startTimer(); playClick();
+const q=QUESTIONS[qi], st=state[qi];
+if(st.done && (mode==='exam' || st.finalDone)) return;
+if(st.wrongTried && st.wrongTried.includes(i)) return;
+if(st.first===null){ st.first=i; st.attempts=0; }
+else { st.attempts++; }
+if(i===q.correct){
+// correct
+if(st.first===i){ st.firstCorrect=true; correctFirst++; streak++; bestStreak=Math.max(bestStreak,streak); xp+=10; st.successMsg=successPhrases[Math.floor(Math.random()*successPhrases.length)]; }
+else { st.firstCorrect=false; streak=0; xp+=5; if(!st.successMsg) st.successMsg=successPhrases[Math.floor(Math.random()*successPhrases.length)]; }
+st.chosen=i; st.done=true; st.finalDone=true;
+playSuccess(); smallConfetti();
+if(streak>0 && streak%5===0){ goldConfettiBig(); showCheer(`🔥 سلسلة نارية ${streak} إجابات!`,`واصلي يا عريب! أنتِ تقتربين من العلامة الكاملة بسرعة الصاروخ 🚀`); }
+else if(st.first===i && Math.random()<.28){ goldConfettiBig(); }
+toast(`✅ <span class="gold-text">أحسنت عريب كمّلي يا بطلة!</span> 🏆`);
+document.getElementById('qCard').classList.add('pop');
+} else {
+// wrong
+playFail();
+document.getElementById('qCard').classList.remove('shake'); void document.getElementById('qCard').offsetWidth; document.getElementById('qCard').classList.add('shake');
+if(mode==='exam'){ st.chosen=i; st.firstCorrect=false; st.done=true; st.finalDone=true; streak=0; toast(`❌ <b>حاولي مرة أخرى</b> يا عريب في القادم! 💪`); }
+else {
+if(!st.wrongTried) st.wrongTried=[];
+st.wrongTried.push(i);
+if(st.first!==i || true){ if(st.wrongTried.length>= 2 && q.type!=='tf' && st.wrongTried.length>=3){ st.chosen=q.correct; st.done=true; st.finalDone=true; st.firstCorrect=false; streak=0; } }
+toast(`❌ <b>حاولي مرة أخرى</b> يا عريب! 🔄`);
+if(q.type==='tf'){ /* second try will be correct */ }
+}
+}
+updateHUD(); renderQuestion();
+if(state[qi].done){ setTimeout(()=>{ if(qi<N-1 && document.getElementById('reportSection').classList.contains('hidden')){ /* stay, let user click next */ } },600); }
+}
+function nextQ(){ playClick(); if(qi<N-1){ qi++; renderQuestion(); document.getElementById('quizSection').scrollIntoView({behavior:'smooth',block:'start'}); } else toast('🏁 هذا آخر سؤال — اضغطي إنهاء لعرض تقريرك الملكي'); }
+function prevQ(){ playClick(); if(qi>0){ qi--; renderQuestion(); } }
+function skipQ(){ playClick(); state[qi].skipped=true; toast('⏭️ تم تخطي السؤال — يمكنك العودة له من الخريطة'); if(qi<N-1){ qi++; renderQuestion(); } updateProgress(); renderPalette(); }
+function toggleTranslateCurrent(){ playClick(); if(translated.has(qi)) translated.delete(qi); else translated.add(qi); renderQuestion(); }
+function translateAllToggle(){ playClick(); translateAll=!translateAll; toast(translateAll?'🌐 تم تفعيل الترجمة العربية لجميع الأسئلة بجانب الإنجليزية':'🌐 تم إخفاء الترجمات'); renderQuestion(); }
+function toggleBookmark(){ playClick(); if(bookmarked.has(qi)) bookmarked.delete(qi); else { bookmarked.add(qi); toast('⭐ تمت الإضافة للمفضلة'); } renderQuestion(); renderPalette(); }
+function reviewBookmarks(){ playClick(); if(bookmarked.size===0){ toast('⭐ لا توجد أسئلة مفضلة بعد — اضغطي 🤍 لحفظ سؤال'); return; } filter='bm'; renderPalette(); document.getElementById('paletteCard').scrollIntoView({behavior:'smooth'}); }
+function setFilter(f){ playClick(); filter=f; document.querySelectorAll('.filter-btn').forEach(b=>{ if(b.dataset.f===f){ b.className='filter-btn px-3 py-1.5 rounded-lg bg-[#D4AF37] text-black'; } else { b.className='filter-btn px-3 py-1.5 rounded-lg bg-white/10'; } }); renderPalette(); }
+function updateHUD(){ document.getElementById('hdrScore').textContent=xp; document.getElementById('statCorrect').textContent=correctFirst; const wrongFirst=state.filter(s=>s.firstCorrect===false).length; document.getElementById('statWrong').textContent=wrongFirst; document.getElementById('statStreak').textContent=streak+' 🔥'; document.getElementById('xpNum').textContent=xp; const lvl=Math.floor(xp/100)+1; document.getElementById('levelNum').textContent=lvl; document.getElementById('xpBar').style.width=((xp%100))+'%'; }
+function updateProgress(){ const answered=state.filter(s=>s.done).length; const pct=Math.round(answered/N*100); document.getElementById('quizProgress').style.width=Math.max(2,pct)+'%'; document.getElementById('topProgress').style.width=pct+'%'; }
+function renderPalette(){ const p=document.getElementById('palette'); p.innerHTML=''; QUESTIONS.forEach((q,idx)=>{ const st=state[idx]; let show=true; if(filter==='ok' && !(st.done&&st.firstCorrect)) show=false; if(filter==='bad' && !(st.done&&st.firstCorrect===false)) show=false; if(filter==='un' && st.done) show=false; if(filter==='bm' && !bookmarked.has(idx)) show=false; if(!show) return; const b=document.createElement('button'); b.textContent=idx+1; b.className='pal-btn'+(idx===qi?' current':'')+((st.done&&st.firstCorrect)?' ok':(st.done&&st.firstCorrect===false)?' bad':(st.skipped&&!st.done)?' skip':''); if(bookmarked.has(idx)) b.textContent+='•'; b.title=`Q${idx+1} - ${q.page}`; b.onclick=()=>{ playClick(); qi=idx; renderQuestion(); }; p.appendChild(b); }); }
+
+/* CHEER */
+function showCheer(t,s){ document.getElementById('bigCheerTitle').textContent=t; document.getElementById('bigCheerSub').textContent=s; const o=document.getElementById('bigCheer'); o.classList.remove('hidden'); o.classList.add('flex'); }
+function closeCheer(){ const o=document.getElementById('bigCheer'); o.classList.add('hidden'); o.classList.remove('flex'); playClick(); }
+
+/* FINISH & REPORT */
+function confirmFinish(){ playClick(); const un=state.filter(s=>!s.done).length; if(un>0){ if(!confirm(`يا عريب، لديك ${un} سؤالًا غير مجاب. هل تريد إنهاء الاختبار وعرض النتيجة الآن؟`)) return; } finish(); }
+function finish(){ clearInterval(timerInt); playFinish(); goldConfettiBig(); setTimeout(goldConfettiBig,800);
+const correct=state.filter(s=>s.firstCorrect===true).length;
+const wrong=state.filter(s=>s.firstCorrect===false).length;
+const skipped=state.filter(s=>!s.done).length;
+const pct=Math.round(correct/N*100);
+document.getElementById('reportSection').classList.remove('hidden');
+document.getElementById('rCorrect').textContent=correct;
+document.getElementById('rWrong').textContent=wrong;
+document.getElementById('rTime').textContent=fmt(seconds);
+document.getElementById('rStreak').textContent=bestStreak+' 🔥';
+document.getElementById('finalPct').textContent=pct+'%';
+document.getElementById('reportSubtitle').textContent=`أكملت ${N} سؤالًا في ${fmt(seconds)} • صح من أول مرة: ${correct} • تحتاج مراجعة: ${wrong} • متخطّى: ${skipped}`;
+let grade,msg;
+if(pct>=90){ grade='🏆 ممتاز مع مرتبة الشرف'; msg=`أسطوري يا عريب! ${correct}/${N} من أول مرة — أحسنت كمّلي يا بطلة! أنتِ جاهزة لاختبار الميد بنسبة 100% 👑🔥`; }
+else if(pct>=80){ grade='🌟 ممتاز'; msg=`رائع يا عريب! ${correct}/${N} — أحسنت كمّلي يا بطلة! مراجعة سريعة للأخطاء وستكون علامتك كاملة 💎`; }
+else if(pct>=70){ grade='👏 جيد جدًا'; msg=`أداء بطولي يا عريب! ${correct}/${N} — استمري! راجعي الأسئلة الخاطئة بالأسفل وستتفوق 🚀`; }
+else if(pct>=60){ grade='💪 جيد'; msg=`بداية قوية يا عريب! ${correct}/${N} — حاولي مرة أخرى وستتحسن كثيرًا! راجعي الشرح لكل سؤال 📚`; }
+else { grade='📚 تحتاج تدريبًا'; msg=`لا تستسلمي يا بطلة! ${correct}/${N} — كل عظيم بدأ من هنا. راجعي الأخطاء ثم أعد الاختبار وستبهر الجميع ❤️‍🔥`; }
+document.getElementById('gradeBadge').textContent=grade;
+const fm=document.getElementById('finalMessage'); fm.textContent=msg;
+const circ=document.getElementById('scoreCircle'); const off=326.7-(326.7*pct/100); setTimeout(()=>circ.style.strokeDashoffset=off,300);
+let best=parseInt(localStorage.getItem('arib_best_net_ch2')||'0'); if(pct>best){ localStorage.setItem('arib_best_net_ch2',pct); best=pct; toast('🎉 رقم قياسي جديد! best: '+pct+'%'); }
+document.getElementById('bestScoreHero').textContent=best+'%';
+showCheer(pct>=60?'أحسنت عريب كمّلي يا بطلة! 🏆':'حاولي مرة أخرى يا بطلة! 💪', msg);
+renderReportList(); drawCharts(correct,wrong,skipped);
+document.getElementById('reportSection').scrollIntoView({behavior:'smooth'});
+}
+function toggleWrongBtn(btn){ document.querySelectorAll('#reportSection .no-print button').forEach(b=>b.classList.replace('btn-gold','btn-ghost')); }
+function renderReportList(){
+const wrap=document.getElementById('reportList'); wrap.innerHTML='';
+QUESTIONS.forEach((q,idx)=>{
+const st=state[idx];
+const isOk=st.firstCorrect===true, isBad=st.firstCorrect===false, isSkip=!st.done;
+if(showOnlyWrong && !isBad) return;
+const userTxt = st.first===null?'— لم يُجب —':`${q.opts.en[st.first]} — ${q.opts.ar[st.first]}`;
+const modelTxt=`${q.opts.en[q.correct]} — ${q.opts.ar[q.correct]}`;
+const card=document.createElement('div');
+card.className=`glass rounded-2xl p-5 border-r-8 ${isOk?'!border-green-500':isBad?'!border-red-500':'!border-yellow-500'}`;
+card.innerHTML=`
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-black btn-gold rounded-lg px-3 py-1 text-sm">Q${q.id}</span>
+<span class="text-xs font-bold bg-white/10 rounded-lg px-3 py-1">📘 ${q.page}</span>
+<span class="text-xs font-bold rounded-lg px-3 py-1 ${q.type==='tf'?'bg-purple-500/20 text-purple-200':'bg-blue-500/20 text-blue-200'}">${q.type==='tf'?'صح / خطأ':'اختياري'}</span>
+${bookmarked.has(idx)?'<span class="text-xs">⭐</span>':''}
+</div>
+<span class="font-black text-sm px-4 py-1.5 rounded-full ${isOk?'bg-green-500/20 text-green-300 border border-green-500':isBad?'bg-red-500/20 text-red-300 border border-red-500':'bg-yellow-500/20 text-yellow-200 border border-yellow-500'}">${isOk?'✅ صح':'❌ خطأ / مراجعة'}</span>
+</div>
+<div dir="ltr" class="text-left font-pop font-semibold mt-3 leading-7 text-[15px]">${q.en}</div>
+<div class="ar-box p-3 mt-2 text-sm font-bold leading-7">🇸🇦 ${q.ar}</div>
+<div class="grid md:grid-cols-2 gap-3 mt-3 text-sm">
+<div class="rounded-xl p-3 border ${isOk?'bg-green-500/10 border-green-500/40':'bg-red-500/10 border-red-500/40'}"><div class="text-xs font-black opacity-70">إجابة عريب (أول محاولة):</div><div class="font-bold mt-1" dir="ltr">${st.first===null?'—':q.opts.en[st.first]}</div><div class="font-bold text-[#F5D67B]">${st.first===null?'لم يُجب':q.opts.ar[st.first]}</div></div>
+<div class="rounded-xl p-3 bg-green-500/10 border border-green-500/40"><div class="text-xs font-black text-green-300">✅ الإجابة النموذجية:</div><div class="font-bold mt-1" dir="ltr">${q.opts.en[q.correct]}</div><div class="font-bold text-[#F5D67B]">${q.opts.ar[q.correct]}</div></div>
+</div>
+<div class="mt-2 text-base md:text-lg leading-8 bg-black/30 rounded-xl p-4 border border-white/10">💡 <b>الشرح:</b> ${q.ex} ${st.attempts>0?`• عدد المحاولات: ${st.attempts+1}`:''}</div>
+<div class="flex gap-2 mt-3 no-print">
+<button onclick="goToQ(${idx})" class="btn-ghost rounded-lg px-4 py-2 text-xs font-bold">🔁 العودة للسؤال</button>
+<button onclick="toggleBmReport(${idx},this)" class="btn-ghost rounded-lg px-4 py-2 text-xs font-bold">${bookmarked.has(idx)?'⭐ مفضلة':'🤍 حفظ'}</button>
+</div>`;
+wrap.appendChild(card);
+});
+if(wrap.children.length===0){ wrap.innerHTML=`<div class="glass rounded-2xl p-10 text-center font-black text-green-300 text-xl">🎉 لا توجد أخطاء يا بطلة! كل إجاباتك صحيحة — أحسنت عريب! 👑</div>`; }
+}
+function goToQ(i){ qi=i; renderQuestion(); document.getElementById('quizSection').scrollIntoView({behavior:'smooth'}); playClick(); }
+function toggleBmReport(i,btn){ if(bookmarked.has(i)) bookmarked.delete(i); else bookmarked.add(i); renderReportList(); renderPalette(); playClick(); }
+function drawCharts(c,w,s){ charts.forEach(ch=>ch.destroy()); charts=[]; charts.push(new Chart(document.getElementById('chartDoughnut'),{type:'doughnut',data:{labels:['صحيحة','تحتاج مراجعة','متخطّى'],datasets:[{data:[c,w,s],backgroundColor:['#22c55e','#ef4444','#D4AF37'],borderWidth:0}]},options:{plugins:{legend:{labels:{color:'#fff',font:{family:'Cairo',weight:'bold'}}}}}}));
+const G=[[0, 33], [33, 57], [57, 70]]; const ok=G.map(g=>state.slice(g[0],g[1]).filter(x=>x.firstCorrect===true).length); const tot=G.map(g=>g[1]-g[0]);
+charts.push(new Chart(document.getElementById('chartBars'),{type:'bar',data:{labels:['صفحات 5–16 Q1-33', 'صفحات 19–36 Q34-57', 'صفحات 43–51 Q58-70'],datasets:[{label:'صحيحة',data:ok,backgroundColor:'#22c55e',borderRadius:10},{label:'خاطئة/متخطّى',data:tot.map((t,i)=>t-ok[i]),backgroundColor:'#ef4444',borderRadius:10}]},options:{scales:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'},beginAtZero:true,max:36}},plugins:{legend:{labels:{color:'#fff'}}}}})); }
+function restartQuiz(){ if(!confirm('هل تريد إعادة الاختبار من جديد يا عريب؟')) return; state=QUESTIONS.map(()=>({chosen:null,first:null,attempts:0,done:false,skipped:false,firstCorrect:null})); qi=0; xp=0; streak=0; bestStreak=0; correctFirst=0; seconds=0; started=false; clearInterval(timerInt); document.getElementById('timerHero').textContent='00:00'; document.getElementById('reportSection').classList.add('hidden'); showOnlyWrong=false; updateHUD(); renderQuestion(); scrollToQuiz(); toast('🔄 بداية جديدة موفقة يا بطلة!'); }
+function shareResult(){ const c=state.filter(s=>s.firstCorrect).length; const t=`🏆 نتيجة البطلة عريب في مراجعة شبكات الحاسب – الشابتر 2: ${c}/${N} (${Math.round(c/N*100)}%) — أحسنت عريب كمّلي يا بطلة! 👑`; if(navigator.share){ navigator.share({title:'نتيجتي',text:t}).catch(()=>{}); } else { navigator.clipboard.writeText(t).then(()=>toast('📋 تم نسخ النتيجة للمشاركة!')); } }
+
+
+/* WHATSAPP REPORT TO DR. MOHAMMED */
+const DR_WA='966540058614';
+function sendWhatsApp(){
+ const c=state.filter(x=>x.firstCorrect===true).length;
+ const w=state.filter(x=>x.firstCorrect===false).length;
+ const sk=state.filter(x=>!x.done).length;
+ const total=QUESTIONS.length;
+ const pct=Math.round(c/total*100);
+ const L=['A','B','C','D'];
+ const sh=(q,i)=> i===null||i===undefined ? '—' : L[i];
+ const wrongLines=[];
+ QUESTIONS.forEach((q,idx)=>{ const st=state[idx]; if(st.firstCorrect!==true){ wrongLines.push('Q'+q.id+' ('+q.page+'): '+sh(q,st.first)+' ← الصحيح: '+sh(q,q.correct)); } });
+ let txt='السلام عليكم دكتور محمد 👋\n';
+ txt+='تقرير مراجعة شبكات الحاسب – الشابتر 2\n';
+ txt+='الطالبة: عريب\n';
+ txt+='━━━━━━━━━━\n';
+ txt+='النتيجة (من أول إجابة): '+c+' / '+total+' ('+pct+'%)\n';
+ txt+='✅ صحيحة: '+c+'  ❌ خاطئة: '+w+'  ⏭️ متخطّاة: '+sk+'\n';
+ txt+='⏱️ الزمن: '+fmt(seconds)+'  🔥 أفضل سلسلة: '+bestStreak+'\n';
+ txt+='━━━━━━━━━━\n';
+ if(wrongLines.length){ txt+='الأسئلة التي تحتاج مراجعة ('+wrongLines.length+'):\n'+wrongLines.join('\n')+'\n'; }
+ else { txt+='🎉 أجبت على جميع الأسئلة بشكل صحيح من أول مرة!\n'; }
+ const url='https://wa.me/'+DR_WA+'?text='+encodeURIComponent(txt);
+ const win=window.open(url,'_blank');
+ if(!win){ location.href=url; }
+}
+
+
+/* KEYBOARD */
+document.addEventListener('keydown',e=>{ if(!document.getElementById('reportSection').classList.contains('hidden') && e.key==='Escape') closeCheer(); if(e.key>='1'&&e.key<='4'){ const q=QUESTIONS[qi]; const idx=parseInt(e.key)-1; if(idx<q.opts.en.length) answer(idx); } if(e.key==='t'||e.key==='T'||e.key==='f'||e.key==='F') toggleTranslateCurrent(); if(e.key==='ArrowLeft') nextQ(); if(e.key==='ArrowRight') prevQ(); });
+
+/* INIT */
+window.onload=function(){
+let p=0; const li=setInterval(()=>{ p+=12; document.getElementById('loadBar').style.width=Math.min(100,p)+'%'; if(p>=100){ clearInterval(li); setTimeout(()=>{ document.getElementById('preloader').style.opacity='0'; setTimeout(()=>document.getElementById('preloader').remove(),700); },300); } },120);
+document.getElementById('bestScoreHero').textContent=(localStorage.getItem('arib_best_net_ch2')||'0')+'%';
+updateHUD(); renderQuestion(); renderPalette();
+setTimeout(()=>toast('👑 أهلًا عريب! اضغطي <b>🌐 ترجم</b> بجانب أي سؤال لرؤية الترجمة العربية فورًا'),1800);
+};
+</script>
+<script>
+const SUM=[["2–11", "🧩", "Principles of network applications", ["Network apps run only on end systems; no user software runs in the network core.", "Client-server: an always-on server with a permanent IP; clients contact it and never talk to each other directly.", "P2P: no always-on server; peers request and provide service (self scalability).", "A process is identified by IP address + port number, and sends/receives through its socket."], ["تطبيقات الشبكة تعمل على الأجهزة الطرفية فقط، ولا يعمل برامج المستخدم في قلب الشبكة.", "عميل-خادم: خادم دايم الشغل بـ IP ثابت، والعملاء يتصلون به ولا يتواصلون مع بعض مباشرة.", "P2P: ما فيه خادم دايم؛ الأجهزة تطلب وتقدّم خدمة (self scalability).", "العملية تتحدد بـ IP + port وترسل وتستقبل عبر الـ socket."], "تخيّلي مطعم: الخادم المطعم المفتوح دايم وعنوانه ثابت، والعملاء زباين يجون ويروحون. وفي الـ P2P كل واحد يجيب أكلة ويشارك الباقين. والعنوان الكامل مثل <b>عمارة + رقم شقة</b>: الـ IP هو العمارة والـ port هو الشقة."], ["12–16", "🚚", "Transport services & TCP / UDP / TLS", ["Apps need different things: data integrity, timing, throughput, security.", "TCP: reliable, flow control, congestion control, connection-oriented; no timing, throughput or security guarantees.", "UDP: unreliable, no connection setup or control.", "TLS adds encryption, integrity and authentication on top of TCP."], ["التطبيقات تحتاج أشياء مختلفة: سلامة البيانات والتوقيت والـ throughput والأمان.", "TCP: موثوق مع flow control وcongestion control وقائم على اتصال؛ بدون ضمان توقيت أو سرعة أو أمان.", "UDP: غير موثوق وبدون إنشاء اتصال أو تحكم.", "TLS يضيف التشفير وسلامة البيانات وتوثيق الهوية فوق TCP."], "TCP مثل شحنة بتتبع وتأكيد استلام، وUDP مثل رسالة بدون تأكيد لكنها أسرع. التحويل البنكي لازم ما يضيع منه حرف، أما المكالمة أو اللعبة فتتحمل ضياع بسيط ولا تتحمل تأخير. وTLS هو <b>الظرف المقفل</b> اللي يحمي كلمة السر."], ["18–23", "🌐", "Web and HTTP basics", ["A web page = base HTML file + referenced objects, each addressable by a URL (host name + path name).", "HTTP: the Web's application-layer protocol; the client requests and the server responds over TCP port 80.", "HTTP is stateless: the server keeps no info about past requests.", "Non-persistent HTTP: one object per TCP connection; persistent: many objects over one connection."], ["صفحة الويب = ملف HTML أساسي + كائنات مرجعية، لكل منها URL (اسم المضيف + المسار).", "HTTP: بروتوكول طبقة التطبيق للويب؛ العميل يطلب والخادم يرد عبر TCP على port 80.", "HTTP بلا حالة: الخادم لا يحتفظ بمعلومات عن الطلبات السابقة.", "غير المستمر: كائن واحد لكل اتصال TCP؛ المستمر: كائنات كثيرة على اتصال واحد."], "الصفحة مثل وجبة: ملف HTML هو القائمة، وكل صورة طبق له عنوان. والـ stateless مثل كاشير ينسى وجهك بعد كل طلب. اضغطي «الخطوة التالية» في الرسم وشوفي كيف يشتغل الـ <b>non-persistent</b> خطوة خطوة."], ["24–25", "⏱️", "RTT, response time & persistent HTTP", ["RTT: time for a small packet to travel from client to server and back.", "Non-persistent response time per object = 2 RTT + file transmission time.", "Persistent HTTP (1.1) keeps the connection open: as little as one RTT for all referenced objects.", "Browsers also open parallel TCP connections to speed things up."], ["RTT: زمن ذهاب حزمة صغيرة من العميل للخادم والرجوع.", "زمن الاستجابة لكل كائن في non-persistent = 2 RTT + زمن إرسال الملف.", "HTTP المستمر (1.1) يبقي الاتصال مفتوحًا: RTT واحد فقط لكل الكائنات المرجعية.", "المتصفحات تفتح أيضًا اتصالات TCP متوازية للتسريع."], "الـ RTT مثل رسالة واتساب تنتظرين ردها. في non-persistent لكل صورة تسألين «أقدر أكلمك؟» وتنتظرين، وبعدين تطلبين. في persistent تفتحين المكالمة مرة وتطلبين كل شي. حرّكي المؤشرات وقارني."], ["26–30", "✉️", "HTTP request & response messages", ["Request: request line (method, URL, version) + header lines + blank line (+ body).", "Methods: GET, POST (form data in body), HEAD (headers only), PUT (upload and replace a file).", "Response: status line + header lines + data.", "Codes: 200 OK, 301 Moved Permanently, 400 Bad Request, 404 Not Found, 505 HTTP Version Not Supported."], ["الطلب: سطر الطلب (method وURL والنسخة) + سطور headers + سطر فارغ (+ body).", "الطرق: GET وPOST (بيانات النموذج في body) وHEAD (headers فقط) وPUT (رفع واستبدال ملف).", "الرد: سطر الحالة + headers + البيانات.", "الأكواد: 200 OK و301 Moved Permanently و400 Bad Request و404 Not Found و505 HTTP Version Not Supported."], "الرسالة نص ASCII يقدر الإنسان يقرأه. حفظها سهل: <b>الطريقة + العنوان + الترويسات + الجسم</b>. اضغطي على كل طريقة وكل كود في الرسم لتعرفين معناه."], ["32–41", "🍪", "Cookies & tracking", ["Four components: Set-cookie header in the response, cookie header in the next request, a cookie file in the browser, and a back-end database.", "Uses: authorization, shopping carts, recommendations, session state.", "First-party cookie: from the site you chose to visit; third-party cookie: from another site (ads) that tracks you across sites.", "GDPR: cookies that identify a person are personal data."], ["أربعة مكوّنات: سطر Set-cookie في الرد، وسطر cookie في الطلب التالي، وملف cookie في المتصفح، وقاعدة بيانات خلفية.", "الاستخدامات: التوثيق وسلال الشراء والتوصيات وحالة الجلسة.", "First-party: من الموقع اللي اخترتي زيارته؛ third-party: من موقع آخر (إعلانات) يتتبعك عبر المواقع.", "GDPR: الـ cookies التي تحدد شخصًا تُعد بيانات شخصية."], "الـ cookie مثل <b>بطاقة عضوية</b>: الموقع يعطيك رقم، وتعرضينه كل زيارة، وهو يبحث عنه في سجلاته. والـ third-party مثل شخص يمشي وراءك بين المتاجر ويدوّن وش تشاهدين. اضغطي الخطوات وشوفي الدورة كاملة."], ["42–48", "🗄️", "Web caches & conditional GET", ["A Web cache (proxy) is a server for the client and a client for the origin server.", "It reduces response time and traffic on the institution's access link.", "Example: hit rate 0.4 gives link utilization 0.58 and average delay of about 1.2 s, cheaper than a 154 Mbps link.", "Conditional GET: If-modified-since returns 304 Not Modified (no object) or 200 OK with data."], ["الـ Web cache (proxy) خادم للعميل وعميل للـ origin server.", "تقلل زمن الاستجابة والحمل على وصلة الوصول للمؤسسة.", "مثال: hit rate = 0.4 يعطي utilization = 0.58 ومتوسط تأخير ≈ 1.2 ثانية، وأرخص من وصلة 154 Mbps.", "Conditional GET: عبر If-modified-since يرد 304 Not Modified (بدون كائن) أو 200 OK مع البيانات."], "الكاش مثل بقالة الحي: تبيعك من مخزونها، ولو ما عندها تطلب من المورّد. جرّبي تغيير نسبة الإصابة في الحاسبة وشوفي كيف تنزل الزحمة والتأخير."], ["49–52", "🚦", "HTTP/2 & head-of-line blocking", ["HTTP/1.1 answers in FCFS order, so small objects wait behind a large one (HOL blocking).", "HTTP/2 divides objects into frames and interleaves their transmission.", "Clients can set object priorities, and servers can push unrequested objects.", "Methods, status codes and most header fields stay the same as HTTP/1.1."], ["HTTP/1.1 يرد بنظام FCFS، فالكائنات الصغيرة تنتظر خلف كائن كبير (HOL blocking).", "HTTP/2 يقسّم الكائنات إلى frames ويبدّل إرسالها بالتناوب.", "العميل يحدد أولويات الكائنات، والخادم يقدر يدفع كائنات لم تُطلب.", "الـ methods وأكواد الحالة ومعظم الـ headers نفسها كما في HTTP/1.1."], "مثل كاشير: زبون عربته ضخمة وخلفه ثلاثة بحاجة وحدة وحدة. في 1.1 الكل ينتظر، وفي 2 يخدمهم بالتناوب. بدّلي بين النمطين في الرسم وقارني زمن انتهاء كل كائن."]];
+const trOn=new Set(), exOn=new Set();
+const VS={};
+const TERMS=["end systems", "end system", "hosts", "host", "client-server", "P2P", "self scalability", "process", "socket", "port number", "port", "IP address", "protocol", "TCP", "UDP", "TLS", "HTTP", "RTT", "non-persistent", "persistent", "stateless", "GET", "POST", "HEAD", "PUT", "200 OK", "301", "404", "505", "Set-cookie", "cookies", "cookie", "first-party", "third-party", "GDPR", "Web cache", "web cache", "proxy", "origin server", "conditional GET", "304 Not Modified", "If-modified-since", "HOL blocking", "FCFS", "frames", "HTTP/2", "HTTP/1.1", "URL", "RFC", "cleartext", "encryption", "throughput", "congestion control", "flow control", "الخادم", "العميل", "الـ socket", "بروتوكول", "البروتوكول"];
+const RX=new RegExp('(?<![A-Za-z])(?:'+TERMS.slice().sort((a,b)=>b.length-a.length).map(t=>t.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')).join('|')+')(?![A-Za-z])','gi');
+function hl(t){return t.replace(RX,m=>'<span class="term">'+m+'</span>')}
+function li(a){return '<p class="mb-2">'+hl(a[0])+'</p><ul class="list-disc pr-6 space-y-2">'+a.slice(1).map(x=>'<li>'+hl(x)+'</li>').join('')+'</ul>'}
+function liR(a){return li(a)}
+function vb(l,fn,on){return '<button onclick="'+fn+'" class="vbtn'+(on?' on':'')+'">'+l+'</button>'}
+function vupd(i){document.getElementById('vis'+i).innerHTML=visHTML(i)}
+
+VS.n3=6;VS.r3=100;VS.h6=40;VS.m7=1;
+const VT=[
+{t:'tabs',k:[['Client-Server','<b>الخادم:</b> دايم الشغل وله IP ثابت وغالبًا في data center. <b>العملاء:</b> يتصلون بالخادم، ممكن ينقطعون وIP متغيّر، ولا يتواصلون مع بعض مباشرة. أمثلة: HTTP وIMAP وFTP.'],['P2P','ما فيه خادم دايم؛ الأجهزة تتواصل مباشرة وكل peer يطلب خدمة ويقدّم خدمة. <b>self scalability:</b> كل peer جديد يضيف قدرة جديدة وطلبًا جديدًا. مثال: BitTorrent.'],['Socket 🚪','العملية ترسل وتستقبل عبر <b>socket</b> مثل «الباب»: تدفع الرسالة للخارج وتعتمد على الـ transport في الجهة الثانية. الـ process يتحكم فيه المبرمج، وبقية الطبقات يتحكم فيها نظام التشغيل.'],['IP + Port','الـ IP (32 بت) يحدد الجهاز، لكن لا يكفي لأن عمليات كثيرة تشتغل عليه، فنضيف <b>port</b>. مثال: خادم الويب 128.119.245.12:80، وخادم البريد على port 25.']]},
+{t:'tabs',k:[['📁 File transfer','لا يتحمل ضياع (no loss)، throughput مرن (elastic)، غير حساس للوقت → <b>TCP</b> (FTP).'],['✉️ E-mail','no loss، elastic، غير حساس للوقت → <b>TCP</b> (SMTP).'],['🌐 Web','no loss، elastic، غير حساس للوقت → <b>TCP</b> (HTTP).'],['🎧 Real-time A/V','يتحمل الضياع، audio ‏5 Kbps–1 Mbps وvideo ‏10 Kbps–5 Mbps، حساس جدًا للتأخير (عشرات الميلي ثانية) → <b>TCP أو UDP</b> (SIP/RTP).'],['🎮 Games','يتحمل الضياع، حساس للتأخير (عشرات msec) → غالبًا <b>UDP</b> أو TCP.'],['🔒 TLS','يشفّر اتصال TCP ويضمن سلامة البيانات وتوثيق الطرف الآخر؛ يشتغل في طبقة التطبيق عبر مكتبات تستخدم TCP.']]},
+{t:'steps',L:'💻',R:'🖥️',k:[['→','TCP connection request (port 80)','المتصفح يطلب فتح اتصال TCP مع الخادم'],['←','Server accepts the connection','الخادم يقبل الاتصال ويبلّغ العميل'],['→','HTTP request: GET someDepartment/home.index','المتصفح يرسل رسالة الطلب داخل الـ socket'],['←','HTTP response (html file) + close TCP','الخادم يرد بالملف ثم يغلق اتصال TCP'],['→','Repeat steps 1–5 for each of the 10 jpeg objects','نكرر كل شي مع كل صورة من الصور العشر']]},
+{t:'c3'},
+{t:'tabs',k:[['GET','لطلب كائن؛ ويمكن إرسال بيانات في الـ URL بعد علامة <b>?</b>'],['POST','بيانات النموذج (form) تُرسل في <b>entity body</b>.'],['HEAD','يطلب الـ <b>headers فقط</b> التي كانت سترجع لو استُخدمت GET.'],['PUT','يرفع كائنًا جديدًا ويستبدل الملف الموجود عند الـ URL بالكامل.'],['200 OK','نجح الطلب، والكائن المطلوب في الرسالة.'],['301','Moved Permanently: الكائن انتقل، والمكان الجديد في حقل <b>Location</b>.'],['400','Bad Request: الخادم لم يفهم الطلب.'],['404','Not Found: المستند غير موجود على الخادم.'],['505','HTTP Version Not Supported.']]},
+{t:'steps',L:'💻',R:'🛒',k:[['→','usual HTTP request (first visit)','أول زيارة: طلب عادي بدون cookie'],['←','Set-cookie: 1678','الموقع ينشئ ID ويسجله في الـ back-end database'],['→','HTTP request + cookie: 1678','بعد أسبوع: المتصفح يرسل الـ cookie تلقائيًا'],['←','cookie-specific action','الموقع يعرفك ويرجّع سلتك وتوصياتك'],['→','Ad request to AdX + cookie: 7493','إعلان طرف ثالث يتتبعك عبر مواقع متعددة']]},
+{t:'c6'},{t:'c7'}];
+VT.forEach((_,i)=>{VS[i]=0});
+function tabH(i,v){const s=VS[i];return '<div class="vrow">'+v.k.map((x,k)=>vb(x[0],'VS['+i+']='+k+';vupd('+i+')',k==s)).join('')+'</div><div class="vinfo">'+v.k[s][1]+'</div><div class="vhint">👆 اضغطي على الأزرار لاستعراض كل نقطة</div>'}
+function stepH(i,v){const c=VS[i],n=v.k.length;return '<div style="direction:ltr;display:flex;justify-content:space-between;font-size:34px;padding:0 10px"><span>'+v.L+'</span><span>'+v.R+'</span></div>'+v.k.map((s,k)=>k<c?'<div class="vstep"><span class="term">'+s[0]+' '+s[1]+'</span><small>'+s[2]+'</small></div>':'').join('')+'<div class="vrow">'+vb(c<n?'▶ الخطوة التالية':'✔ اكتملت الخطوات','if(VS['+i+']<'+n+'){VS['+i+']++;vupd('+i+')}',0)+vb('🔄 من البداية','VS['+i+']=0;vupd('+i+')',0)+'</div>'}
+function bar(t,w,c){return '<div class="vhint" style="color:#fff;direction:ltr">'+t+'</div><div class="vbar"><div style="width:'+w+'%;background:'+c+'"></div></div>'}
+function v3o(){const n=+VS.n3,r=+VS.r3,a=(n+1)*2*r,b=3*r,m=Math.max(a,b);return bar('Non-persistent: <b>'+a+' ms</b>',Math.round(a/m*100),'#ef4444')+bar('Persistent: <b>'+b+' ms</b>',Math.round(b/m*100),'#22c55e')+'<div class="vinfo">non-persistent = (1 + '+n+') × 2RTT ، persistent ≈ 2RTT + 1RTT = 3RTT (بدون احتساب زمن إرسال الملفات). التوفير: <b>'+Math.round((1-b/a)*100)+'%</b></div>'}
+function v3u(){VS.n3=document.getElementById('v3n').value;VS.r3=document.getElementById('v3r').value;document.getElementById('v3a').textContent=VS.n3;document.getElementById('v3b').textContent=VS.r3;document.getElementById('v3o').innerHTML=v3o()}
+function v6o(){const h=VS.h6/100,u=(1-h)*1.5/1.54,d=(1-h)*2.01+h*0.001;return bar('Access link utilization: <b>'+u.toFixed(2)+'</b>',Math.min(100,Math.round(u*100)),u>.9?'#ef4444':'#22c55e')+'<div class="vinfo">الحمل على الوصلة = <b>'+((1-h)*1.5).toFixed(2)+' Mbps</b> من 1.54 Mbps<br>متوسط التأخير = <b>'+(u>.9?'دقائق (طابور طويل!)':d.toFixed(2)+' ثانية')+'</b>'+(u<=.9&&d<2?'<br>✅ أحسن من شراء وصلة 154 Mbps (≈ 2 ثانية) وأرخص.':'')+'</div>'}
+function v6u(){VS.h6=document.getElementById('v6i').value;document.getElementById('v6h').textContent=(VS.h6/100).toFixed(2);document.getElementById('v6o').innerHTML=v6o()}
+function v7h(){const m=VS.m7,T=m==1?[20,21,22,23]:[23,2,3,4];return '<div class="vrow">'+vb('HTTP/1.1 (FCFS)','VS.m7=1;vupd(7)',m==1)+vb('HTTP/2 (frames)','VS.m7=2;vupd(7)',m==2)+'</div>'+T.map((t,k)=>bar('O'+(k+1)+(k?' (صغير)':' (كبير)')+' ينتهي عند الوحدة <b>'+t+'</b>',Math.round(t/23*100),k?'#D4AF37':'#7C3AED')).join('')+'<div class="vinfo">'+(m==1?'الكائنات الصغيرة O2 وO3 وO4 تنتظر خلف O1 الكبير.':'O2 وO3 وO4 تصل بسرعة، وO1 يتأخر قليلًا فقط.')+'</div>'}
+function visHTML(i){const v=VT[i];if(v.t=='tabs')return tabH(i,v);if(v.t=='steps')return stepH(i,v);if(v.t=='c3')return '<div class="vinfo">عدد الصور المرجعية = <b id="v3a">'+VS.n3+'</b><input type="range" min="1" max="10" value="'+VS.n3+'" oninput="v3u()" id="v3n" class="w-full"><br>RTT = <b id="v3b">'+VS.r3+'</b> ms<input type="range" min="10" max="300" value="'+VS.r3+'" oninput="v3u()" id="v3r" class="w-full"></div><div id="v3o">'+v3o()+'</div>';if(v.t=='c6')return '<div class="vinfo">نسبة إصابة الكاش (hit rate) = <b id="v6h">'+(VS.h6/100).toFixed(2)+'</b><input type="range" min="0" max="100" step="5" value="'+VS.h6+'" oninput="v6u()" id="v6i" class="w-full"></div><div id="v6o">'+v6o()+'</div>';return v7h()}
+
+
+function drawSum(){document.getElementById('sumList').innerHTML=SUM.map((x,i)=>{const t=trOn.has(i),p=exOn.has(i);
+return '<div class="rounded-3xl p-4 md:p-6 bg-black/40 border border-[#D4AF37]/30 w-full"><div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-3"><span class="text-3xl">'+x[1]+'</span><div><div class="font-black text-lg md:text-xl">'+(i+1)+'. '+x[2]+'</div><span class="text-xs md:text-sm font-bold bg-white/10 rounded-lg px-3 py-1">📘 صفحة '+x[0]+'</span></div></div><div class="flex gap-2"><button onclick="sumTr('+i+')" class="'+(t?'rounded-xl px-5 py-2.5 font-black bg-white/15 border border-[#D4AF37]':'btn-gold rounded-xl px-5 py-2.5 font-black')+'">'+(t?'🙈 إخفاء الترجمة':'🌐 ترجمة')+'</button><button onclick="sumEx('+i+')" class="'+(p?'rounded-xl px-5 py-2.5 font-black bg-white/15 border border-[#D4AF37]':'btn-gold rounded-xl px-5 py-2.5 font-black')+'">'+(p?'🙈 إخفاء الشرح':'💡 شرح')+'</button></div></div><div id="vis'+i+'" class="vis mt-4">'+visHTML(i)+'</div><div dir="ltr" class="grid '+(t?'md:grid-cols-2':'')+' gap-4 mt-4"><div class="text-left font-pop text-xl md:text-2xl leading-[2.5] bg-black/50 border border-white/10 rounded-2xl p-4">'+li(x[3])+'</div>'+(t?'<div dir="rtl" class="ar-box p-4 pop text-right"><div class="text-xs md:text-sm font-black text-[#F5D67B] mb-1">🇸🇦 الترجمة:</div><div class="font-bold text-lg md:text-xl leading-10">'+liR(x[4])+'</div></div>':'')+'</div>'+(p?'<div class="rounded-2xl p-5 mt-4 pop w-full sxp" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.55)"><div class="font-black text-[#F5D67B] text-lg md:text-xl mb-2">💡 شرح مبسّط ومثال من الواقع</div><div class="font-bold text-lg md:text-xl leading-10">'+x[5]+'</div></div>':'')+'</div>'}).join('')}
+function sumTr(i){trOn.has(i)?trOn.delete(i):trOn.add(i);drawSum()}
+function sumEx(i){exOn.has(i)?exOn.delete(i):exOn.add(i);drawSum()}
+function sumAll(){const all=trOn.size<SUM.length;trOn.clear();if(all)SUM.forEach((_,i)=>trOn.add(i));document.getElementById('sumAllBtn').textContent=all?'🙈 إخفاء كل الترجمات':'🌐 ترجمة كل الفقرات';drawSum()}
+drawSum();
+</script>
+</body>
+</html>
